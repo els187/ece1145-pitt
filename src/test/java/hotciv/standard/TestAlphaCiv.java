@@ -59,6 +59,28 @@ public class TestAlphaCiv {
     assertThat(game.getPlayerInTurn(), is(Player.BLUE));
   }
 
+  @Test
+  public void shouldHavePlainsEverywhere() {
+    for (int i = 0; i < GameConstants.WORLDSIZE; i++) {
+      for (int j = 0; j < GameConstants.WORLDSIZE; j++) {
+        assertThat(game, is(notNullValue()));
+        assertThat(game.getTileAt(new Position(i, j)).getTypeString(), is(GameConstants.PLAINS));
+        }
+      }
+    }
+
+
+// Can only be implemented after doing Aging
+//  @Test
+//  public void redWinsIn3000BC() {
+//    for (int i = 0; i < 10; i++) {
+//      game.endOfTurn();
+//      game.endOfTurn();
+//    }
+//    assertThat(game, is(notNullValue()));
+//    assertThat(game.getWinner(), is(Player.RED));
+//  }
+
   /** REMOVE ME. Not a test of HotCiv, just an example of what
       matchers the hamcrest library has... */
   @Test

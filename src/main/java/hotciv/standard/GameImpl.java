@@ -32,7 +32,10 @@ import hotciv.framework.*;
 public class GameImpl implements Game {
   private Player playerInTurn = Player.RED;
 
-  public Tile getTileAt( Position p ) { return null; }
+  public Tile getTileAt( Position p ) {
+    return new TileImpl(GameConstants.PLAINS);
+  }
+
   public Unit getUnitAt( Position p ) { return null; }
   public City getCityAt( Position p ) { return null; }
   public Player getPlayerInTurn() {
