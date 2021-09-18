@@ -49,8 +49,14 @@ public class TestAlphaCiv {
   @Test
   public void shouldBeRedAsStartingPlayer() {
     assertThat(game, is(notNullValue()));
-    // TODO: reenable the assert below to get started...
-    // assertThat(game.getPlayerInTurn(), is(Player.RED));
+    assertThat(game.getPlayerInTurn(), is(Player.RED));
+  }
+
+  @Test
+  public void shouldBeBluesTurnAfterRed() {
+    game.endOfTurn();
+    assertThat(game, is(notNullValue()));
+    assertThat(game.getPlayerInTurn(), is(Player.BLUE));
   }
 
   /** REMOVE ME. Not a test of HotCiv, just an example of what
