@@ -31,9 +31,23 @@ import hotciv.framework.*;
 
 public class GameImpl implements Game {
   private Player playerInTurn = Player.RED;
+  private Tile[][] tiles = new Tile[GameConstants.WORLDSIZE][GameConstants.WORLDSIZE];
+
+  public GameImpl() {
+    for(int i = 0; i < GameConstants.WORLDSIZE;i++){
+      for(int j = 0; j < GameConstants.WORLDSIZE;j++){
+        tiles[i][j] = new TileImpl(GameConstants.PLAINS);
+      }
+    }
+
+    tiles[1][0] = new TileImpl(GameConstants.OCEANS);
+    tiles[0][1] = new TileImpl(GameConstants.HILLS);
+    tiles[2][2] = new TileImpl(GameConstants.MOUNTAINS);
+  }
 
   public Tile getTileAt( Position p ) {
-    return new TileImpl(GameConstants.PLAINS);
+    return tiles[p.getRow()][p.getColumn()];
+    //return new TileImpl(GameConstants.PLAINS);
   }
 
   public Unit getUnitAt( Position p ) { return null; }
