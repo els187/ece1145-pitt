@@ -56,7 +56,10 @@ public class GameImpl implements Game {
     return playerInTurn;
   }
   public Player getWinner() { return null; }
-  public int getAge() { return 0; }
+  public int getAge() { 
+   int age = -4000; 
+   age = age + 100;
+   return age; }
   public boolean moveUnit( Position from, Position to ) {
     return false;
   }
