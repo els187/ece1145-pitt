@@ -59,19 +59,8 @@ public class TestAlphaCiv {
     assertThat(game.getPlayerInTurn(), is(Player.BLUE));
   }
 
-//  @Test
-//  public void shouldHavePlainsEverywhere() {
-//    for (int i = 0; i < GameConstants.WORLDSIZE; i++) {
-//      for (int j = 0; j < GameConstants.WORLDSIZE; j++) {
-//        assertThat(game, is(notNullValue()));
-//        assertThat(game.getTileAt(new Position(i, j)).getTypeString(), is(GameConstants.PLAINS));
-//        }
-//      }
-//    }
-
   @Test
   public void shouldHavePlainsEverywhereElse() {
-    //10,01,22
     assertThat(game, is(notNullValue()));
     assertThat(game.getTileAt(new Position(0, 0)).getTypeString(), is(GameConstants.PLAINS));
     assertThat(game.getTileAt(new Position(1, 1)).getTypeString(), is(GameConstants.PLAINS));

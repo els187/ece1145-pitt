@@ -47,15 +47,21 @@ public class GameImpl implements Game {
 
   public Tile getTileAt( Position p ) {
     return tiles[p.getRow()][p.getColumn()];
-    //return new TileImpl(GameConstants.PLAINS);
+   //return new TileImpl(GameConstants.PLAINS);
   }
 
   public Unit getUnitAt( Position p ) { return null; }
   public City getCityAt( Position p ) { return null; }
+
   public Player getPlayerInTurn() {
     return playerInTurn;
   }
-  public Player getWinner() { return null; }
+  public Player getWinner() {
+    if(getAge() == -3000){
+      return Player.RED;
+    }
+    return null;
+  }
   public int getAge() { return 0; }
   public boolean moveUnit( Position from, Position to ) {
     return false;
