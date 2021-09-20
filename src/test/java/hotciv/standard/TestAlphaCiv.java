@@ -39,7 +39,9 @@ import java.util.*;
 public class TestAlphaCiv {
   private Game game;
 
-  /** Fixture for alphaciv testing. */
+  /**
+   * Fixture for alphaciv testing.
+   */
   @Before
   public void setUp() {
     game = new GameImpl();
@@ -58,6 +60,29 @@ public class TestAlphaCiv {
     assertThat(game, is(notNullValue()));
     assertThat(game.getPlayerInTurn(), is(Player.BLUE));
   }
+  @Test
+  public void startsAtYear4000BC() {
+    assertThat(game, is(notNullValue()));
+    assertThat(game.getAge(), is(-4000));
+  }
+
+  @Test
+  public void ageIncreasesAfterEveryRound() {
+    game.endOfTurn();
+    game.endOfTurn();
+    assertThat(game, is(notNullValue()));
+    assertThat(game.getAge(), is(-3900));
+  }
+
+  @Test
+  public void redWinsIn3000BC() {
+    for (int i = 0; i < 10; i++) {
+      game.endOfTurn();
+      game.endOfTurn();
+    }
+    assertThat(game, is(notNullValue()));
+    assertThat(game.getWinner(), is(Player.RED));
+  }
 
   @Test
   public void shouldHavePlainsEverywhereElse() {
@@ -65,62 +90,47 @@ public class TestAlphaCiv {
     assertThat(game.getTileAt(new Position(0, 0)).getTypeString(), is(GameConstants.PLAINS));
     assertThat(game.getTileAt(new Position(1, 1)).getTypeString(), is(GameConstants.PLAINS));
     assertThat(game.getTileAt(new Position(3, 3)).getTypeString(), is(GameConstants.PLAINS));
-    assertThat(game.getTileAt(new Position(15,15 )).getTypeString(), is(GameConstants.PLAINS));
+    assertThat(game.getTileAt(new Position(15, 15)).getTypeString(), is(GameConstants.PLAINS));
   }
 
   @Test
-  public void shouldHaveOceanAt1_0(){
+  public void shouldHaveOceanAt1_0() {
     assertThat(game, is(notNullValue()));
-    assertThat(game.getTileAt(new Position(1,0)).getTypeString(), is(GameConstants.OCEANS));
+    assertThat(game.getTileAt(new Position(1, 0)).getTypeString(), is(GameConstants.OCEANS));
   }
 
   @Test
-  public void shouldHaveHillsAt0_1(){
+  public void shouldHaveHillsAt0_1() {
     assertThat(game, is(notNullValue()));
-    assertThat(game.getTileAt(new Position(0,1)).getTypeString(), is(GameConstants.HILLS));
+    assertThat(game.getTileAt(new Position(0, 1)).getTypeString(), is(GameConstants.HILLS));
   }
 
   @Test
-  public void shouldHaveMountainsAt2_2(){
+  public void shouldHaveMountainsAt2_2() {
     assertThat(game, is(notNullValue()));
-    assertThat(game.getTileAt(new Position(2,2)).getTypeString(), is(GameConstants.MOUNTAINS));
+    assertThat(game.getTileAt(new Position(2, 2)).getTypeString(), is(GameConstants.MOUNTAINS));
   }
 
-
-// Can only be implemented after doing Aging
-//  @Test
-//  public void redWinsIn3000BC() {
-//    for (int i = 0; i < 10; i++) {
-//      game.endOfTurn();
-//      game.endOfTurn();
-//    }
-//    assertThat(game, is(notNullValue()));
-//    assertThat(game.getWinner(), is(Player.RED));
-//  }
-
-  /** REMOVE ME. Not a test of HotCiv, just an example of what
-      matchers the hamcrest library has... */
   @Test
-  public void shouldDefinetelyBeRemoved() {
-    // Matching null and not null values
-    // 'is' require an exact match
-    String s = null;
-    assertThat(s, is(nullValue()));
-    s = "Ok";
-    assertThat(s, is(notNullValue()));
-    assertThat(s, is("Ok"));
-
-    // If you only validate substrings, use containsString
-    assertThat("This is a dummy test", containsString("dummy"));
-
-    // Match contents of Lists
-    List<String> l = new ArrayList<String>();
-    l.add("Bimse");
-    l.add("Bumse");
-    // Note - ordering is ignored when matching using hasItems
-    assertThat(l, hasItems(new String[] {"Bumse","Bimse"}));
-
-    // Matchers may be combined, like is-not
-    assertThat(l.get(0), is(not("Bumse")));
+  public void shouldHaveRedArcherAt2_0(){
+    assertThat(game, is(notNullValue()));
+    assertThat(game.getUnitAt(new Position(2,0)).getTypeString(), is(GameConstants.ARCHER));
+    assertThat(game.getUnitAt(new Position(2, 0)).getOwner(), is(Player.RED));
   }
+
+  @Test
+  public void shouldHaveBlueLegionAt3_2(){
+    assertThat(game, is(notNullValue()));
+    assertThat(game.getUnitAt(new Position(3,2)).getTypeString(), is(GameConstants.LEGION));
+    assertThat(game.getUnitAt(new Position(3, 2)).getOwner(), is(Player.BLUE));
+  }
+
+  @Test
+  public void shouldHaveRedSettlerAt4_3(){
+    assertThat(game, is(notNullValue()));
+    assertThat(game.getUnitAt(new Position(4,3)).getTypeString(), is(GameConstants.SETTLER));
+    assertThat(game.getUnitAt(new Position(4, 3)).getOwner(), is(Player.RED));
+  }
+
 }
+

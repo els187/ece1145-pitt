@@ -32,7 +32,8 @@ import hotciv.framework.*;
 public class GameImpl implements Game {
   private Player playerInTurn = Player.RED;
   private Tile[][] tiles = new Tile[GameConstants.WORLDSIZE][GameConstants.WORLDSIZE];
-  private Player age = -4000; 
+  private Unit[][] units = new Unit[GameConstants.WORLDSIZE][GameConstants.WORLDSIZE];
+  private int age = -4000;
  
   public GameImpl() {
     for(int i = 0; i < GameConstants.WORLDSIZE;i++){
@@ -44,6 +45,10 @@ public class GameImpl implements Game {
     tiles[1][0] = new TileImpl(GameConstants.OCEANS);
     tiles[0][1] = new TileImpl(GameConstants.HILLS);
     tiles[2][2] = new TileImpl(GameConstants.MOUNTAINS);
+
+    units[2][0] = new UnitImpl(GameConstants.ARCHER, Player.RED);
+    units[3][2] = new UnitImpl(GameConstants.LEGION, Player.BLUE);
+    units[4][3] = new UnitImpl(GameConstants.SETTLER, Player.RED);
   }
 
   public Tile getTileAt( Position p ) {
@@ -51,7 +56,9 @@ public class GameImpl implements Game {
    //return new TileImpl(GameConstants.PLAINS);
   }
 
-  public Unit getUnitAt( Position p ) { return null; }
+  public Unit getUnitAt( Position p ) {
+    return units[p.getRow()][p.getColumn()];
+  }
   public City getCityAt( Position p ) { return null; }
 
   public Player getPlayerInTurn() {
@@ -72,8 +79,8 @@ public class GameImpl implements Game {
       playerInTurn = Player.BLUE;
     } else {
       playerInTurn = Player.RED;
+      age = age + 100;
     }
-   age = age + 100;
   }
   public void changeWorkForceFocusInCityAt( Position p, String balance ) {}
   public void changeProductionInCityAt( Position p, String unitType ) {}
