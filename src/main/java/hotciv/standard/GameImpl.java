@@ -32,7 +32,8 @@ import hotciv.framework.*;
 public class GameImpl implements Game {
   private Player playerInTurn = Player.RED;
   private Tile[][] tiles = new Tile[GameConstants.WORLDSIZE][GameConstants.WORLDSIZE];
-
+  private Player age = -4000; 
+ 
   public GameImpl() {
     for(int i = 0; i < GameConstants.WORLDSIZE;i++){
       for(int j = 0; j < GameConstants.WORLDSIZE;j++){
@@ -62,7 +63,7 @@ public class GameImpl implements Game {
     }
     return null;
   }
-  public int getAge() { return 0; }
+  public int getAge() { return age; }
   public boolean moveUnit( Position from, Position to ) {
     return false;
   }
@@ -72,6 +73,7 @@ public class GameImpl implements Game {
     } else {
       playerInTurn = Player.RED;
     }
+   age = age + 100;
   }
   public void changeWorkForceFocusInCityAt( Position p, String balance ) {}
   public void changeProductionInCityAt( Position p, String unitType ) {}
