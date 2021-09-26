@@ -103,17 +103,17 @@ public class GameImpl implements Game {
         units[to.getRow()][to.getColumn()] = unitFrom;
         units[from.getRow()][from.getColumn()] = null;
         return true;
-      }
+      } //at this point, we have checked if the tile is occupied, so we can check if attack
       if(attackOnEnemySucceeded(from, to)) {return true;}
     }
     return false;
   }
-
+  //In Alpha Civ, the attacker is always successful.
   private boolean attackOnEnemySucceeded(Position from, Position to) {
       boolean successfulAttack = true;
       if (successfulAttack) {
-        units[to.getRow()][to.getColumn()] = getUnitAt(from);
-        units[from.getRow()][from.getColumn()] = null;
+        units[to.getRow()][to.getColumn()] = getUnitAt(from); //moves unit to tile
+        units[from.getRow()][from.getColumn()] = null; //deletes old position
         return true;
       }
     return false;
@@ -146,7 +146,7 @@ public class GameImpl implements Game {
 
   public void performUnitActionAt( Position p ) {
     if (getUnitAt(p).getTypeString()== GameConstants.SETTLER) { //This if-case is empty for now, as there are no established unit action functions yet.
-      return; //build city at position p
+      return; //build city at position p (temporary)
     } else if (getUnitAt(p).getTypeString() == GameConstants.LEGION) {
       return; //do nothing at position p
     } else if (getUnitAt(p).getTypeString() == GameConstants.ARCHER) {
