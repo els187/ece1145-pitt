@@ -181,5 +181,43 @@ public class TestAlphaCiv {
     assertThat(redCity.getProduction(), is(GameConstants.SETTLER));
   }
 
+  @Test
+  public void treasuryTotalIsDeductedAfterProducingForRedCity(){
+    for (int i = 0; i < 10; i++) {
+      game.endOfTurn();
+    }
+
+    City redCity = game.getCityAt(new Position(1,1));
+    City blueCity = game.getCityAt(new Position(4,1));
+
+    assertThat(redCity.getTreasury(), is(30));
+    assertThat(blueCity.getTreasury(), is(30));
+
+    game.changeProductionInCityAt(new Position(1,1), GameConstants.ARCHER);
+    assertThat(redCity.getProduction(), is(GameConstants.ARCHER));
+    assertThat(redCity.getTreasury(), is(20));
+
+    game.changeProductionInCityAt(new Position(1,1), GameConstants.LEGION);
+    assertThat(redCity.getProduction(), is(GameConstants.LEGION));
+    assertThat(redCity.getTreasury(), is(5));
+  }
+
+  @Test
+  public void treasuryTotalIsDeductedAfterProducingForBlueCity(){
+    for (int i = 0; i < 22; i++) {
+      game.endOfTurn();
+    }
+
+    City redCity = game.getCityAt(new Position(1,1));
+    City blueCity = game.getCityAt(new Position(4,1));
+
+    assertThat(redCity.getTreasury(), is(66));
+    assertThat(blueCity.getTreasury(), is(66));
+
+    game.changeProductionInCityAt(new Position(4,1), GameConstants.SETTLER);
+    assertThat(blueCity.getProduction(), is(GameConstants.SETTLER));
+    assertThat(blueCity.getTreasury(), is(36));
+  }
+
 }
 

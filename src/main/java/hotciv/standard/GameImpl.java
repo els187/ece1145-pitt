@@ -44,14 +44,17 @@ public class GameImpl implements Game {
       }
     }
 
+    //Set tiles to be of types oceans, hill, mountains
     tiles[1][0] = new TileImpl(GameConstants.OCEANS);
     tiles[0][1] = new TileImpl(GameConstants.HILLS);
     tiles[2][2] = new TileImpl(GameConstants.MOUNTAINS);
 
+    //Set units to be of red archers, blue legions, red settlers
     units[2][0] = new UnitImpl(GameConstants.ARCHER, Player.RED);
     units[3][2] = new UnitImpl(GameConstants.LEGION, Player.BLUE);
     units[4][3] = new UnitImpl(GameConstants.SETTLER, Player.RED);
 
+    //Set city to be owned by red and blue
     cities[1][1] = new CityImpl(Player.RED);
     cities[4][1] = new CityImpl(Player.BLUE);
   }
@@ -72,6 +75,7 @@ public class GameImpl implements Game {
     return playerInTurn;
   }
   public Player getWinner() {
+    //If age is 3000, red wins
     if(getAge() == -3000){
       return Player.RED;
     }
@@ -82,20 +86,29 @@ public class GameImpl implements Game {
     return false;
   }
   public void endOfTurn() {
+    //If current player is red, switch to blue and add 6 productions
     if(playerInTurn == Player.RED){
       playerInTurn = Player.BLUE;
       CityImpl blueCity = (CityImpl) getCityAt(new Position(4,1));
       blueCity.setTreasury(6);
     } else {
+      //If current player is blue, switch to red and add 6 productions
       playerInTurn = Player.RED;
       CityImpl redCity = (CityImpl) getCityAt(new Position(1,1));
       redCity.setTreasury(6);
 
+      //Advance age by 100 years each round
       age = age + 100;
     }
   }
+
   public void changeWorkForceFocusInCityAt( Position p, String balance ) {}
-  public void changeProductionInCityAt( Position p, String unitType ) {}
+
+  public void changeProductionInCityAt( Position p, String unitType ) {
+    CityImpl city = (CityImpl) cities[p.getRow()][p.getColumn()];
+    produceUnit(city,p,unitType);
+  }
+
   public void performUnitActionAt( Position p ) {
     if (getUnitAt(p).getTypeString()== GameConstants.SETTLER) { //This if-case is empty for now, as there are no established unit action functions yet.
       return; //build city at position p
@@ -106,5 +119,31 @@ public class GameImpl implements Game {
     } else if (getUnitAt(p).getTypeString() == null) {
       return;
     }
+  }
+
+  public void produceUnit(CityImpl c,  Position p, String unitType ){
+    //If unitType is Archer and has enough to buy an archer, produce an Archer
+    if (unitType.equals(GameConstants.ARCHER) && c.getTreasury() >= 10) {
+      c.setProduction(GameConstants.ARCHER);
+    //If unitType is Legion and has enough to buy a legion, produce a Legion
+    } else if (unitType.equals(GameConstants.LEGION) && c.getTreasury() >= 15) {
+      c.setProduction(GameConstants.LEGION);
+    //If unitType is Settler and has enough to buy a settler, produce a Settler
+    } else if (unitType.equals(GameConstants.SETTLER) && c.getTreasury() >= 30) {
+      c.setProduction(GameConstants.SETTLER);
+    }
+
+    //Deduct the unitType's cost from the treasury
+    c.removeTreasury(unitCost(c.getProduction()));
+  }
+
+  private int unitCost(String type) {
+    if (type.equals(GameConstants.ARCHER)) {
+      return 10;
+    }
+    else if (type.equals(GameConstants.LEGION)) {
+      return 15;
+    }
+    else return 30;
   }
 }

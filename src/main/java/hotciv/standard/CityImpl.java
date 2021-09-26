@@ -37,6 +37,10 @@ public class CityImpl implements City{
         treasury += n;
     }
 
+    public void removeTreasury(int n){
+        treasury -= n;
+    }
+
     public void setProduction(String production) {
         this.production = production;
     }
