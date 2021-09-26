@@ -132,5 +132,17 @@ public class TestAlphaCiv {
     assertThat(game.getUnitAt(new Position(4, 3)).getOwner(), is(Player.RED));
   }
 
+  @Test
+  public void shouldHaveRedCityAt1_1() {
+    assertThat(game, is(notNullValue()));
+    assertThat(game.getCityAt(new Position(1, 1)).getOwner(), is(Player.RED));
+  }
+
+  @Test
+  public void shouldHaveBlueCityAt4_1() {
+    assertThat(game, is(notNullValue()));
+    assertThat(game.getCityAt(new Position(4, 1)).getOwner(), is(Player.BLUE));
+  }
+
 }
 

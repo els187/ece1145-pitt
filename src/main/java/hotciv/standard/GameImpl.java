@@ -31,9 +31,11 @@ import hotciv.framework.*;
 
 public class GameImpl implements Game {
   private Player playerInTurn = Player.RED;
+  private int age = -4000;
+
   private Tile[][] tiles = new Tile[GameConstants.WORLDSIZE][GameConstants.WORLDSIZE];
   private Unit[][] units = new Unit[GameConstants.WORLDSIZE][GameConstants.WORLDSIZE];
-  private int age = -4000;
+  private City[][] cities = new City[GameConstants.WORLDSIZE][GameConstants.WORLDSIZE];
  
   public GameImpl() {
     for(int i = 0; i < GameConstants.WORLDSIZE;i++){
@@ -49,17 +51,22 @@ public class GameImpl implements Game {
     units[2][0] = new UnitImpl(GameConstants.ARCHER, Player.RED);
     units[3][2] = new UnitImpl(GameConstants.LEGION, Player.BLUE);
     units[4][3] = new UnitImpl(GameConstants.SETTLER, Player.RED);
+
+    cities[1][1] = new CityImpl(Player.RED);
+    cities[4][1] = new CityImpl(Player.BLUE);
   }
 
   public Tile getTileAt( Position p ) {
     return tiles[p.getRow()][p.getColumn()];
-   //return new TileImpl(GameConstants.PLAINS);
   }
 
   public Unit getUnitAt( Position p ) {
     return units[p.getRow()][p.getColumn()];
   }
-  public City getCityAt( Position p ) { return null; }
+
+  public City getCityAt( Position p ) {
+    return cities[p.getRow()][p.getColumn()];
+  }
 
   public Player getPlayerInTurn() {
     return playerInTurn;
