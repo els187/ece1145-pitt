@@ -84,5 +84,15 @@ public class GameImpl implements Game {
   }
   public void changeWorkForceFocusInCityAt( Position p, String balance ) {}
   public void changeProductionInCityAt( Position p, String unitType ) {}
-  public void performUnitActionAt( Position p ) {}
+  public void performUnitActionAt( Position p ) {
+    if (getUnitAt(p).getTypeString()== GameConstants.SETTLER) { //This if-case is empty for now, as there are no established unit action functions yet.
+      return; //build city at position p
+    } else if (getUnitAt(p).getTypeString() == GameConstants.LEGION) {
+      return; //do nothing at position p
+    } else if (getUnitAt(p).getTypeString() == GameConstants.ARCHER) {
+      return; //fortify at position p
+    } else if (getUnitAt(p).getTypeString() == null) {
+      return;
+    }
+  }
 }
