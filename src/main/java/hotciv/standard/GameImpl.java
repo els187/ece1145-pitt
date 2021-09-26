@@ -92,13 +92,18 @@ public class GameImpl implements Game {
       return false;
     }
 
-    //If tile isn't occupied then move the unit, set the old tile equal to null
-    if(getUnitAt(to) == null) {
-      units[to.getRow()][to.getColumn()] = unitFrom;
-      units[from.getRow()][from.getColumn()] = null;
-      return true;
-    }
+    if (unitFrom.getOwner() != playerInTurn)
+      return false;
 
+    //If destination tile is less than 1 unit from sourceTile, then move it
+    if (Math.abs(to.getRow() - from.getRow()) <= 1 && Math.abs(to.getColumn() - from.getColumn()) <= 1) {
+      //If tile isn't occupied then move the unit, set the old tile equal to null
+      if(getUnitAt(to) == null) {
+        units[to.getRow()][to.getColumn()] = unitFrom;
+        units[from.getRow()][from.getColumn()] = null;
+        return true;
+      }
+    }
     return false;
   }
 

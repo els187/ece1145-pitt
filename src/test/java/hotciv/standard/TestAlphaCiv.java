@@ -256,8 +256,6 @@ public class TestAlphaCiv {
 
   @Test
   public void shouldMoveSettlerFrom4_3To4_4() {
-    game.endOfTurn();
-
     Unit oldLegion = game.getUnitAt((new Position(4, 3)));
     assertThat(oldLegion.getTypeString(),is(GameConstants.SETTLER));
     assertThat(game.moveUnit(new Position(4,3),new Position(4,4)),is(true));
@@ -267,7 +265,18 @@ public class TestAlphaCiv {
     assertThat(newLegion.getTypeString(),is(GameConstants.SETTLER));
   }
 
+  @Test
+  public void shouldNotBeAbleToMoveMoreThan1Tile() {
+    assertThat(game.moveUnit(new Position(2, 0), new Position(2, 6)),is(Boolean.FALSE));
+    assertThat(game.moveUnit(new Position(2,0), new Position(0,0)), is(Boolean.FALSE));
+  }
 
-
+@Test
+public void redCantMoveBlueUnits(){
+  assertThat(game.getPlayerInTurn(), is(Player.RED));
+  Unit legion = game.getUnitAt(new Position(3,2));
+  assertThat(legion.getOwner(), is(Player.BLUE));
+  assertThat(game.moveUnit(new Position(3,2), new Position(3,1)), is(false));
+}
 }
 
