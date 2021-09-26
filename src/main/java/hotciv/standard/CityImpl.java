@@ -4,6 +4,7 @@ import hotciv.framework.*;
 
 public class CityImpl implements City{
     Player cityOwner;
+    private int treasury;
 
     public CityImpl(Player player) {
         cityOwner = player;
@@ -18,7 +19,7 @@ public class CityImpl implements City{
     }
 
     public int getTreasury(){
-        return 0;
+        return treasury;
     }
 
     public String getProduction() {
@@ -29,4 +30,7 @@ public class CityImpl implements City{
         return null;
     }
 
+    public void setTreasury(int n){
+        treasury += n;
+    }
 }

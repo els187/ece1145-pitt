@@ -84,8 +84,13 @@ public class GameImpl implements Game {
   public void endOfTurn() {
     if(playerInTurn == Player.RED){
       playerInTurn = Player.BLUE;
+      CityImpl blueCity = (CityImpl) getCityAt(new Position(4,1));
+      blueCity.setTreasury(6);
     } else {
       playerInTurn = Player.RED;
+      CityImpl redCity = (CityImpl) getCityAt(new Position(1,1));
+      redCity.setTreasury(6);
+
       age = age + 100;
     }
   }

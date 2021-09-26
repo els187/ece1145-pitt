@@ -151,5 +151,15 @@ public class TestAlphaCiv {
     assertThat(game.getCityAt(new Position(4, 1)).getSize(), is(1));
   }
 
+  @Test
+  public void citiesProduce6PerRound() {
+    for (int i = 0; i < 10; i++) {
+      game.endOfTurn();
+    }
+    assertThat(game.getCityAt(new Position(1, 1)).getTreasury(), is(30));
+    assertThat(game.getCityAt(new Position(4, 1)).getTreasury(), is(30));
+
+  }
+
 }
 
