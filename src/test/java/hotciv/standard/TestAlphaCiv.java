@@ -144,5 +144,12 @@ public class TestAlphaCiv {
     assertThat(game.getCityAt(new Position(4, 1)).getOwner(), is(Player.BLUE));
   }
 
+  @Test
+  public void populationSizeShouldBe1() {
+    assertThat(game, is(notNullValue()));
+    assertThat(game.getCityAt(new Position(1, 1)).getSize(), is(1));
+    assertThat(game.getCityAt(new Position(4, 1)).getSize(), is(1));
+  }
+
 }
 
