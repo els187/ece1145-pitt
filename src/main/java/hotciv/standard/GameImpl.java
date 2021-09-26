@@ -104,9 +104,21 @@ public class GameImpl implements Game {
         units[from.getRow()][from.getColumn()] = null;
         return true;
       }
+      if(attackOnEnemySucceeded(from, to)) {return true;}
     }
     return false;
   }
+
+  private boolean attackOnEnemySucceeded(Position from, Position to) {
+      boolean successfulAttack = true;
+      if (successfulAttack) {
+        units[to.getRow()][to.getColumn()] = getUnitAt(from);
+        units[from.getRow()][from.getColumn()] = null;
+        return true;
+      }
+    return false;
+  }
+
 
   public void endOfTurn() {
     //If current player is red, switch to blue and add 6 productions

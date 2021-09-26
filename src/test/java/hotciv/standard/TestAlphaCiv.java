@@ -271,6 +271,20 @@ public class TestAlphaCiv {
     assertThat(game.moveUnit(new Position(2,0), new Position(0,0)), is(Boolean.FALSE));
   }
 
+  @Test
+  public void attackShouldAlwaysBeSuccessful() {
+    assertThat(game.moveUnit(new Position(2, 0), new Position(3,0)), is(true));
+    assertThat(game.moveUnit(new Position(3, 0), new Position(3,1)), is(true));
+    Unit oldArcherUnit = game.getUnitAt(new Position(3,1));
+    assertThat(oldArcherUnit.getTypeString(),is(GameConstants.ARCHER));
+    Unit oldLegion = game.getUnitAt((new Position(3, 2)));
+    assertThat(oldLegion.getTypeString(),is(GameConstants.LEGION));
+    assertThat(game.moveUnit(new Position(3, 1), new Position(3,2)), is(true));
+    Unit newArcherUnit = game.getUnitAt(new Position(3,2));
+    assertThat(newArcherUnit.getTypeString(),is(GameConstants.ARCHER));
+    assertThat(game.getUnitAt(new Position(3,1)),is(nullValue()));
+  }
+
 @Test
 public void redCantMoveBlueUnits(){
   assertThat(game.getPlayerInTurn(), is(Player.RED));
