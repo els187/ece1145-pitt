@@ -1,5 +1,6 @@
 package hotciv.standard;
 //Oh no! There is a fake bug in this file. We must fix it by implementing a hotfix.
+//Fixed bug.
 import hotciv.framework.*;
 
 /** Skeleton implementation of HotCiv.
