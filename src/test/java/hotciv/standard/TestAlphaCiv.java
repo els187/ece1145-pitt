@@ -219,5 +219,16 @@ public class TestAlphaCiv {
     assertThat(blueCity.getTreasury(), is(36));
   }
 
+  @Test
+  public void unitsCannotMoveOverMountains(){
+    assertThat(game.moveUnit(new Position(3,2), new Position(2,2)), is(Boolean.FALSE));
+  }
+
+  @Test
+  public void unitsCannotMoveOverOceans(){
+    assertThat(game.moveUnit(new Position(2,0), new Position(1,0)), is(Boolean.FALSE));
+  }
+
+
 }
 

@@ -83,8 +83,17 @@ public class GameImpl implements Game {
   }
   public int getAge() { return age; }
   public boolean moveUnit( Position from, Position to ) {
-    return false;
+    Unit unitFrom = getUnitAt(from);
+    Unit unitTo = getUnitAt(to);
+    Tile tileTo = getTileAt(to);
+
+    //Check if the destinationTile contains Mountains or Oceans
+    if(tileTo.getTypeString().equals(GameConstants.MOUNTAINS)  || tileTo.getTypeString().equals(GameConstants.OCEANS)){
+      return false;
+    }
+    return true;
   }
+
   public void endOfTurn() {
     //If current player is red, switch to blue and add 6 productions
     if(playerInTurn == Player.RED){
