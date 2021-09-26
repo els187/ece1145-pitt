@@ -91,7 +91,15 @@ public class GameImpl implements Game {
     if(tileTo.getTypeString().equals(GameConstants.MOUNTAINS)  || tileTo.getTypeString().equals(GameConstants.OCEANS)){
       return false;
     }
-    return true;
+
+    //If tile isn't occupied then move the unit, set the old tile equal to null
+    if(getUnitAt(to) == null) {
+      units[to.getRow()][to.getColumn()] = unitFrom;
+      units[from.getRow()][from.getColumn()] = null;
+      return true;
+    }
+
+    return false;
   }
 
   public void endOfTurn() {

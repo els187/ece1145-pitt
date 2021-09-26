@@ -229,6 +229,45 @@ public class TestAlphaCiv {
     assertThat(game.moveUnit(new Position(2,0), new Position(1,0)), is(Boolean.FALSE));
   }
 
+  @Test
+  public void shouldMoveArcherFrom2_0To2_1(){
+    Unit oldArcherUnit = game.getUnitAt(new Position(2,0));
+
+    assertThat(oldArcherUnit.getTypeString(),is(GameConstants.ARCHER));
+    assertThat(game.moveUnit(new Position(2,0), new Position(2,1)), is(true));
+    assertThat(game.getUnitAt(new Position(2,0)), is(nullValue()));
+
+    Unit newArcherUnit = game.getUnitAt(new Position(2,1));
+    assertThat(newArcherUnit.getTypeString(), is(GameConstants.ARCHER));
+  }
+
+  @Test
+  public void shouldMoveLegionFrom3_2To3_3() {
+    game.endOfTurn();
+
+    Unit oldLegion = game.getUnitAt((new Position(3, 2)));
+    assertThat(oldLegion.getTypeString(),is(GameConstants.LEGION));
+    assertThat(game.moveUnit(new Position(3,2),new Position(3,3)),is(true));
+    assertThat(game.getUnitAt(new Position(3,2)),is(nullValue()));
+
+    Unit newLegion = game.getUnitAt(new Position(3,3));
+    assertThat(newLegion.getTypeString(),is(GameConstants.LEGION));
+  }
+
+  @Test
+  public void shouldMoveSettlerFrom4_3To4_4() {
+    game.endOfTurn();
+
+    Unit oldLegion = game.getUnitAt((new Position(4, 3)));
+    assertThat(oldLegion.getTypeString(),is(GameConstants.SETTLER));
+    assertThat(game.moveUnit(new Position(4,3),new Position(4,4)),is(true));
+    assertThat(game.getUnitAt(new Position(4,3)),is(nullValue()));
+
+    Unit newLegion = game.getUnitAt(new Position(4,4));
+    assertThat(newLegion.getTypeString(),is(GameConstants.SETTLER));
+  }
+
+
 
 }
 
