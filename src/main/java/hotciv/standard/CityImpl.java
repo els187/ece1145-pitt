@@ -5,6 +5,8 @@ import hotciv.framework.*;
 public class CityImpl implements City{
     Player cityOwner;
     private int treasury;
+    private String production;
+
 
     public CityImpl(Player player) {
         cityOwner = player;
@@ -23,7 +25,8 @@ public class CityImpl implements City{
     }
 
     public String getProduction() {
-        return null;
+        // return GameConstants.ARCHER;
+        return production;
     }
 
     public String getWorkforceFocus() {
@@ -32,5 +35,9 @@ public class CityImpl implements City{
 
     public void setTreasury(int n){
         treasury += n;
+    }
+
+    public void setProduction(String production) {
+        this.production = production;
     }
 }

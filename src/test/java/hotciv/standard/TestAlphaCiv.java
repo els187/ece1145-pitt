@@ -158,7 +158,27 @@ public class TestAlphaCiv {
     }
     assertThat(game.getCityAt(new Position(1, 1)).getTreasury(), is(30));
     assertThat(game.getCityAt(new Position(4, 1)).getTreasury(), is(30));
+  }
 
+  @Test
+  public void citiesCanProduceArchers(){
+    CityImpl redCity = (CityImpl) game.getCityAt(new Position(1,1));
+    redCity.setProduction(GameConstants.ARCHER);
+    assertThat(redCity.getProduction(), is(GameConstants.ARCHER));
+  }
+
+  @Test
+  public void citiesCanProduceLegions(){
+    CityImpl redCity = (CityImpl) game.getCityAt(new Position(1,1));
+    redCity.setProduction(GameConstants.LEGION);
+    assertThat(redCity.getProduction(), is(GameConstants.LEGION));
+  }
+
+  @Test
+  public void citiesCanProduceSettlers(){
+    CityImpl redCity = (CityImpl) game.getCityAt(new Position(1,1));
+    redCity.setProduction(GameConstants.SETTLER);
+    assertThat(redCity.getProduction(), is(GameConstants.SETTLER));
   }
 
 }
