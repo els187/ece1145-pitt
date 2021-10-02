@@ -4,12 +4,15 @@ import hotciv.framework.*;
 
 public class CityImpl implements City{
     Player cityOwner;
+    private int size;
     private int treasury;
     private String production;
 
 
     public CityImpl(Player player) {
-        cityOwner = player;
+        this.cityOwner = player;
+        this.size = 1;
+        this.production = GameConstants.ARCHER;
     }
 
     public Player getOwner() {
@@ -17,7 +20,7 @@ public class CityImpl implements City{
     }
 
     public int getSize() {
-        return 1;
+        return size;
     }
 
     public int getTreasury(){

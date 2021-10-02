@@ -92,6 +92,10 @@ public class GameImpl implements Game {
   public boolean moveUnit( Position from, Position to ) {
     Unit unitFrom = getUnitAt(from);
     Tile tileTo = getTileAt(to);
+    UnitImpl unitChoice = (UnitImpl) unitFrom;
+
+    //Check if unit is fortified
+    if (unitChoice.getFortified()) return false;
 
     //Check if the destinationTile contains Mountains or Oceans
     if(tileTo.getTypeString().equals(GameConstants.MOUNTAINS)  || tileTo.getTypeString().equals(GameConstants.OCEANS)){
@@ -152,12 +156,19 @@ public class GameImpl implements Game {
   }
 
   public void performUnitActionAt( Position p ) {
-    if (getUnitAt(p).getTypeString()== GameConstants.SETTLER) { //This if-case is empty for now, as there are no established unit action functions yet.
-      return; //build city at position p (temporary)
+    UnitImpl impUnit = (UnitImpl) getUnitAt(p);
+    if (getUnitAt(p).getTypeString()== GameConstants.SETTLER) { //build city at position p (temporary)
+      units.remove(p);
+      cities.put(p, new CityImpl(impUnit.getOwner()));
     } else if (getUnitAt(p).getTypeString() == GameConstants.LEGION) {
       return; //do nothing at position p
-    } else if (getUnitAt(p).getTypeString() == GameConstants.ARCHER) {
-      return; //fortify at position p
+    } else if (getUnitAt(p).getTypeString() == GameConstants.ARCHER) { //fortify at position p
+      impUnit.setFortified();
+      if (impUnit.getFortified() == true) {
+        impUnit.setDefensiveStrength(impUnit.getDefensiveStrength() * 2);
+      } else {
+        impUnit.setDefensiveStrength(impUnit.getDefensiveStrength() / 2);
+      }
     } else if (getUnitAt(p).getTypeString() == null) {
       return;
     }
