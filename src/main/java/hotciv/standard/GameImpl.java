@@ -200,4 +200,8 @@ public class GameImpl implements Game {
     }
     else return 30;
   }
+
+  public HashMap<Position, City> getCities() {
+    return cities;
+  }
 }

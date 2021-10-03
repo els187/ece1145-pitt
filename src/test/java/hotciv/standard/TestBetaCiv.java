@@ -14,12 +14,11 @@ public class TestBetaCiv {
      */
     @Before
     public void setUp() {
-        game = new GameImpl(new BetaAgingStrategy(), new AlphaWinningStrategy());
+        game = new GameImpl(new BetaAgingStrategy(), new BetaWinningStrategy());
     }
 
     private void numberOfRounds(int rounds) {
         for (int i = 0; i < rounds; i++) {
-            // call endOfTurn twice to play one round, since there are two players
             game.endOfTurn();
             game.endOfTurn();
         }
@@ -27,24 +26,24 @@ public class TestBetaCiv {
 
     @Test
     public void worldAgesCorrectly() {
-        assertThat(game.getAge(), is(-4000));
+        assertEquals(-4000, game.getAge());
         numberOfRounds(39);
-        assertThat(game.getAge(), is(-100));
+        assertEquals(-100, game.getAge());
         numberOfRounds(1);
-        assertThat(game.getAge(), is(-1));
+        assertEquals(-1, game.getAge());
         numberOfRounds(1);
-        assertThat(game.getAge(), is(1));
+        assertEquals(1, game.getAge());
         numberOfRounds(1);
-        assertThat(game.getAge(), is(50));
+        assertEquals(50, game.getAge());
         numberOfRounds(34);
-        assertThat(game.getAge(), is(1750));
+        assertEquals(1750, game.getAge());
         numberOfRounds(6);
-        assertThat(game.getAge(), is(1900));
+        assertEquals(1900, game.getAge());
         numberOfRounds(14);
-        assertThat(game.getAge(), is(1970));
+        assertEquals(1970, game.getAge());
         numberOfRounds(1);
-        assertThat(game.getAge(), is(1971));
+        assertEquals(1971, game.getAge());
         numberOfRounds(1);
-        assertThat(game.getAge(), is(1972));
+        assertEquals(1972, game.getAge());
     }
 }
