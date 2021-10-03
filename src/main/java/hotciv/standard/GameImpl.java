@@ -63,8 +63,8 @@ public class GameImpl implements Game {
 
 
     //Set cities to be owned by red and blue
-    cities.put(new Position(1,1), new CityImpl(Player.RED));
-    cities.put(new Position(4,1), new CityImpl(Player.BLUE));
+    //cities.put(new Position(1,1), new CityImpl(Player.RED));
+   // cities.put(new Position(4,1), new CityImpl(Player.BLUE));
 
   }
 
