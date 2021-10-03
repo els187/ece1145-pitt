@@ -15,6 +15,9 @@ public class CityImpl implements City{
         this.production = GameConstants.ARCHER;
     }
 
+    public CityImpl(Player red) {
+    }
+
     public Player getOwner() {
         return cityOwner;
     }

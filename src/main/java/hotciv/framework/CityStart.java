@@ -1,7 +1,7 @@
 package hotciv.framework;
-import hotciv.standard.CityImpl;
-import java.util.Map;
+import java.util.*;
+import hotciv.standard.*;
 
 public interface CityStart {
-    public Map<Position, CityImpl> setCityCoords();
+    public Map<Position, City> setCityCoords();
 }
