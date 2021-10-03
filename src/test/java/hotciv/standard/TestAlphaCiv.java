@@ -45,7 +45,7 @@ public class TestAlphaCiv {
 
   @Before
   public void setUp() {
-    game = new GameImpl();
+    game = new GameImpl(new AlphaAgingStrategy());
   }
 
   // FRS p. 455 states that 'Red is the first player to take a turn'.

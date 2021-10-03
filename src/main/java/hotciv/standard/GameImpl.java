@@ -33,12 +33,15 @@ import java.util.*;
 public class GameImpl implements Game {
   private Player playerInTurn = Player.RED;
   private int age = -4000;
+  private AgingStrategy agingStrategy;
+
 
   private HashMap<Position, City> cities  = new HashMap<Position, City>();
   private HashMap<Position, Unit> units = new HashMap<Position, Unit>();
   private HashMap<Position, Tile> tiles = new HashMap<Position, Tile>();
 
-  public GameImpl(){
+  public GameImpl(AgingStrategy agingStrategy){
+    this.agingStrategy = agingStrategy;
 
     for(int i = 0; i < GameConstants.WORLDSIZE;i++){
       for(int j = 0; j < GameConstants.WORLDSIZE;j++){
@@ -141,9 +144,7 @@ public class GameImpl implements Game {
       playerInTurn = Player.RED;
       CityImpl redCity = (CityImpl) getCityAt(new Position(1,1));
       redCity.setTreasury(6);
-
-      //Advance age by 100 years each round
-      age = age + 100;
+      age = agingStrategy.getStrategicAging(age);
     }
   }
 
