@@ -17,12 +17,14 @@ public class TestDeltaCiv {
 
     @Test
     public void shouldHaveRedCityat8_12() {
-
+        Position redStart = new Position(8,12);
+        assertThat(game.getCityAt(redStart).getOwner(), is(Player.RED));
     }
 
     @Test
     public void shouldHaveBlueCityat4_5(){
-
+        Position blueStart = new Position(4,5);
+        assertThat(game.getCityAt(blueStart).getOwner(), is(Player.BLUE));
     }
 
 }

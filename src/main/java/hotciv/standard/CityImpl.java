@@ -9,7 +9,7 @@ public class CityImpl implements City{
     private String production;
 
 
-    public CityImpl(Player player) {
+    public CityImpl(Player player, Position position) {
         this.cityOwner = player;
         this.size = 1;
         this.production = GameConstants.ARCHER;

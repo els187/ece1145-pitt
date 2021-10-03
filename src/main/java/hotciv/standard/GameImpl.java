@@ -158,7 +158,7 @@ public class GameImpl implements Game {
     UnitImpl impUnit = (UnitImpl) getUnitAt(p);
     if (getUnitAt(p).getTypeString()== GameConstants.SETTLER) { //build city at position p (temporary)
       units.remove(p);
-      cities.put(p, new CityImpl(impUnit.getOwner()));
+      cities.put(p, new CityImpl(impUnit.getOwner(), new Position(4, 5)));
     } else if (getUnitAt(p).getTypeString() == GameConstants.LEGION) {
       return; //do nothing at position p
     } else if (getUnitAt(p).getTypeString() == GameConstants.ARCHER) { //fortify at position p
