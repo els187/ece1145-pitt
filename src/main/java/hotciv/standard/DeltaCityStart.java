@@ -1,4 +1,4 @@
 package hotciv.standard;
 
-public class DeltaCityStart {
+public class DeltaCityStart implements CityStart {
 }
