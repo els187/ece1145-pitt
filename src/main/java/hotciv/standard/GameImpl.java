@@ -34,14 +34,16 @@ public class GameImpl implements Game {
   private Player playerInTurn = Player.RED;
   private int age = -4000;
   private AgingStrategy agingStrategy;
+  private WinningStrategy winningStrategy;
 
 
   private HashMap<Position, City> cities  = new HashMap<Position, City>();
   private HashMap<Position, Unit> units = new HashMap<Position, Unit>();
   private HashMap<Position, Tile> tiles = new HashMap<Position, Tile>();
 
-  public GameImpl(AgingStrategy agingStrategy){
+  public GameImpl(AgingStrategy agingStrategy, WinningStrategy winningStrategy){
     this.agingStrategy = agingStrategy;
+    this.winningStrategy = winningStrategy;
 
     for(int i = 0; i < GameConstants.WORLDSIZE;i++){
       for(int j = 0; j < GameConstants.WORLDSIZE;j++){
@@ -81,11 +83,7 @@ public class GameImpl implements Game {
   }
 
   public Player getWinner() {
-    //If age is 3000, red wins
-    if(getAge() == -3000){
-      return Player.RED;
-    }
-    return null;
+    return winningStrategy.getStrategicWinner(this);
   }
 
   public int getAge() {

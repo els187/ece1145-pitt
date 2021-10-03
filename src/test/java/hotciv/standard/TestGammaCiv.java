@@ -17,7 +17,7 @@ public class TestGammaCiv {
 
     @Before
     public void setUp() {
-        game = new GameImpl(new AlphaAgingStrategy()) {
+        game = new GameImpl(new AlphaAgingStrategy(), new AlphaWinningStrategy()) {
         };
     }
 
