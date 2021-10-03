@@ -4,25 +4,6 @@ import hotciv.framework.*;
 import java.util.*;
 
 public class DeltaMapStrategy implements MapStrategy {
-
-    /*
-    public DeltaMapStrategy() {
-        world = defineWorld();
-    }
-    public Unit getUnitAt(Position p ) { return null; }
-    public City getCityAt(Position p ) { return null; }
-    public Player getPlayerInTurn() { return null; }
-    public Player getWinner() { return null; }
-    public int getAge() { return 0; }
-    public boolean moveUnit( Position from, Position to ) { return true; }
-    public void endOfTurn() {}
-    public void changeWorkForceFocusInCityAt( Position p, String balance ) {}
-    public void changeProductionInCityAt( Position p, String unitType ) {}
-    public void performUnitActionAt( Position p ) {}
-    //public void addObserver(GameObserver observer) {}
-    public void setTileFocus(Position position) {}
-    */
-
     // A simple implementation to draw the map of DeltaCiv
     public Map<Position,Tile> world;
     public Tile getTileAt( Position p ) { return world.get(p); }

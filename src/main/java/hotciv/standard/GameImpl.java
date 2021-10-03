@@ -35,16 +35,17 @@ public class GameImpl implements Game {
   private int age = -4000;
   private AgingStrategy agingStrategy;
   private WinningStrategy winningStrategy;
-
+  private MapStrategy mapStrategy;
 
   private HashMap<Position, City> cities  = new HashMap<Position, City>();
   private HashMap<Position, Unit> units = new HashMap<Position, Unit>();
   private HashMap<Position, Tile> tiles = new HashMap<Position, Tile>();
 
-  public GameImpl(AgingStrategy agingStrategy, WinningStrategy winningStrategy){
+  public GameImpl(AgingStrategy agingStrategy, WinningStrategy winningStrategy, MapStrategy mapStrategy){
     this.agingStrategy = agingStrategy;
     this.winningStrategy = winningStrategy;
-
+    this.mapStrategy = mapStrategy;
+/** This code is for AlphaCiv. Temporarily commented out for DeltaCiv to work.
     for(int i = 0; i < GameConstants.WORLDSIZE;i++){
       for(int j = 0; j < GameConstants.WORLDSIZE;j++){
         tiles.put(new Position(i, j), new TileImpl(GameConstants.PLAINS));
@@ -63,9 +64,9 @@ public class GameImpl implements Game {
 
 
     //Set cities to be owned by red and blue
-    cities.put(new Position(8,12), new CityImpl(Player.RED));
-    cities.put(new Position(4,5), new CityImpl(Player.BLUE));
-
+   // cities.put(new Position(8,12), new CityImpl(Player.RED));
+   //cities.put(new Position(4,5), new CityImpl(Player.BLUE));
+*/
   }
 
   public Tile getTileAt( Position p ) {
