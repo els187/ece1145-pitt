@@ -47,6 +47,10 @@ public class GameImpl implements Game {
     this.agingStrategy = agingStrategy;
     this.winningStrategy = winningStrategy;
     this.mapStrategy = mapStrategy;
+
+    tiles = mapStrategy.defineTilesLayout();
+    units = mapStrategy.defineUnitsLayout();
+    cities = mapStrategy.defineCitiesLayout();
   }
 
   public TileImpl getTileAt(Position p) {

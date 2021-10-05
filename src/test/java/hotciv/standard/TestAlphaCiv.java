@@ -1,23 +1,20 @@
 package hotciv.standard;
-
 import hotciv.framework.*;
 
 import org.junit.*;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
-import java.util.*;
-
 /**
-   This source code is from the book 
-     "Flexible, Reliable Software:
-       Using Patterns and Agile Development"
-     published 2010 by CRC Press.
-   Author: 
-     Henrik B Christensen 
-     Department of Computer Science
-     Aarhus University.
-*/
+ This source code is from the book
+ "Flexible, Reliable Software:
+ Using Patterns and Agile Development"
+ published 2010 by CRC Press.
+ Author:
+ Henrik B Christensen
+ Department of Computer Science
+ Aarhus University.
+ */
 public class TestAlphaCiv {
   private Game game;
 
@@ -27,10 +24,15 @@ public class TestAlphaCiv {
 
   @Before
   public void setUp() {
-    game = new GameImpl(new AlphaAgingStrategy(), new AlphaWinningStrategy(), new DeltaMapStrategy());
+    game = new GameImpl(new AlphaAgingStrategy(), new AlphaWinningStrategy(), new AlphaMapStrategy());
   }
 
-  // FRS p. 455 states that 'Red is the first player to take a turn'.
+  private void playRounds(int rounds) {
+    for (int i = 0; i < rounds * 2; i++) {
+      game.endOfTurn();
+    }
+  }
+
   @Test
   public void shouldBeRedAsStartingPlayer() {
     assertThat(game, is(notNullValue()));
@@ -134,13 +136,14 @@ public class TestAlphaCiv {
     assertThat(game.getCityAt(new Position(4, 1)).getSize(), is(1));
   }
 
+
   @Test
   public void citiesProduce6PerRound() {
-    for (int i = 0; i < 10; i++) {
-      game.endOfTurn();
-    }
-    assertThat(game.getCityAt(new Position(1, 1)).getTreasury(), is(30));
-    assertThat(game.getCityAt(new Position(4, 1)).getTreasury(), is(30));
+    CityImpl blueCity = (CityImpl) game.getCityAt(new Position(4,1));
+    assertThat(game.getCityAt(new Position(4, 1)), is(notNullValue())); // there is a city at 4,3
+    game.endOfTurn();
+    game.endOfTurn();
+    assertThat(game.getCityAt(new Position(4, 1)).getTreasury(), is(6));
   }
 
   @Test
@@ -164,43 +167,6 @@ public class TestAlphaCiv {
     assertThat(redCity.getProduction(), is(GameConstants.SETTLER));
   }
 
-  @Test
-  public void treasuryTotalIsDeductedAfterProducingForRedCity(){
-    for (int i = 0; i < 10; i++) {
-      game.endOfTurn();
-    }
-
-    City redCity = game.getCityAt(new Position(1,1));
-    City blueCity = game.getCityAt(new Position(4,1));
-
-    assertThat(redCity.getTreasury(), is(30));
-    assertThat(blueCity.getTreasury(), is(30));
-
-    game.changeProductionInCityAt(new Position(1,1), GameConstants.ARCHER);
-    assertThat(redCity.getProduction(), is(GameConstants.ARCHER));
-    assertThat(redCity.getTreasury(), is(20));
-
-    game.changeProductionInCityAt(new Position(1,1), GameConstants.LEGION);
-    assertThat(redCity.getProduction(), is(GameConstants.LEGION));
-    assertThat(redCity.getTreasury(), is(5));
-  }
-
-  @Test
-  public void treasuryTotalIsDeductedAfterProducingForBlueCity(){
-    for (int i = 0; i < 22; i++) {
-      game.endOfTurn();
-    }
-
-    City redCity = game.getCityAt(new Position(1,1));
-    City blueCity = game.getCityAt(new Position(4,1));
-
-    assertThat(redCity.getTreasury(), is(66));
-    assertThat(blueCity.getTreasury(), is(66));
-
-    game.changeProductionInCityAt(new Position(4,1), GameConstants.SETTLER);
-    assertThat(blueCity.getProduction(), is(GameConstants.SETTLER));
-    assertThat(blueCity.getTreasury(), is(36));
-  }
 
   @Test
   public void unitsCannotMoveOverMountains(){
@@ -213,7 +179,7 @@ public class TestAlphaCiv {
   }
 
   @Test
-  public void shouldMoveArcherFrom2_0To2_1(){
+  public void archerMovesFrom2_0To2_1(){
     Unit oldArcherUnit = game.getUnitAt(new Position(2,0));
 
     assertThat(oldArcherUnit.getTypeString(),is(GameConstants.ARCHER));
@@ -225,7 +191,7 @@ public class TestAlphaCiv {
   }
 
   @Test
-  public void shouldMoveLegionFrom3_2To3_3() {
+  public void legionMovesFrom3_2To3_3() {
     game.endOfTurn();
 
     Unit oldLegion = game.getUnitAt((new Position(3, 2)));
@@ -238,7 +204,7 @@ public class TestAlphaCiv {
   }
 
   @Test
-  public void shouldMoveSettlerFrom4_3To4_4() {
+  public void settlerMovesFrom4_3To4_4() {
     Unit oldLegion = game.getUnitAt((new Position(4, 3)));
     assertThat(oldLegion.getTypeString(),is(GameConstants.SETTLER));
     assertThat(game.moveUnit(new Position(4,3),new Position(4,4)),is(true));
@@ -248,11 +214,40 @@ public class TestAlphaCiv {
     assertThat(newLegion.getTypeString(),is(GameConstants.SETTLER));
   }
 
+
+  @Test
+  public void totalTreasuryIsDeducted() {
+    CityImpl blueCity = (CityImpl) game.getCityAt(new Position(4,1));
+    assertThat(game.getCityAt(new Position(4, 1)), is(notNullValue()));
+    assertThat(game.getUnitAt(new Position(4, 1)), is(nullValue()));
+    blueCity.setProduction(GameConstants.LEGION);
+    game.endOfTurn();
+    game.endOfTurn();
+    assertThat(game.getCityAt(new Position(4, 1)).getTreasury(), is(6));
+    game.endOfTurn();
+    game.endOfTurn();
+    assertThat(game.getCityAt(new Position(4, 1)).getTreasury(), is(12));
+    assertThat(game.getUnitAt(new Position(4, 1)), is(nullValue()));
+    game.endOfTurn();
+    game.endOfTurn();
+    assertThat(game.getUnitAt(new Position(4, 1)).getTypeString(), is(GameConstants.LEGION));
+    assertThat(game.getCityAt(new Position(4, 1)).getTreasury(), is(3));
+  }
+
   @Test
   public void shouldNotBeAbleToMoveMoreThan1Tile() {
     assertThat(game.moveUnit(new Position(2, 0), new Position(2, 6)),is(Boolean.FALSE));
     assertThat(game.moveUnit(new Position(2,0), new Position(0,0)), is(Boolean.FALSE));
   }
+
+  @Test
+  public void redCantMoveBlueUnits(){
+    assertThat(game.getPlayerInTurn(), is(Player.RED));
+    Unit legion = game.getUnitAt(new Position(3,2));
+    assertThat(legion.getOwner(), is(Player.BLUE));
+    assertThat(game.moveUnit(new Position(3,2), new Position(3,1)), is(false));
+  }
+
 
   @Test
   public void attackShouldAlwaysBeSuccessful() {
@@ -268,12 +263,15 @@ public class TestAlphaCiv {
     assertThat(game.getUnitAt(new Position(3,1)),is(nullValue()));
   }
 
-@Test
-public void redCantMoveBlueUnits(){
-  assertThat(game.getPlayerInTurn(), is(Player.RED));
-  Unit legion = game.getUnitAt(new Position(3,2));
-  assertThat(legion.getOwner(), is(Player.BLUE));
-  assertThat(game.moveUnit(new Position(3,2), new Position(3,1)), is(false));
+  @Test
+  public void attackingUnitShouldWin(){
+    Unit settler = game.getUnitAt(new Position(4,3));
+    assertThat(settler.getTypeString(), is(GameConstants.SETTLER));
+    Unit legion = game.getUnitAt(new Position(3,2));
+    assertThat(legion.getTypeString(), is(GameConstants.LEGION));
+    assertThat(game.moveUnit(new Position(4,3), new Position(3,2)), is(true));
+    settler = game.getUnitAt(new Position(3,2));
+    assertThat(settler.getTypeString(),is(GameConstants.SETTLER));
+    assertThat(game.getUnitAt(new Position(4,3)), is(nullValue()));
+  }
 }
-}
-

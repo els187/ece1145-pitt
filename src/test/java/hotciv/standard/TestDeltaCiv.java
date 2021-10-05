@@ -16,20 +16,14 @@ public class TestDeltaCiv {
     }
 
     @Test
-    public void shouldHaveRedCityat8_12() {
+    public void shouldHaveRedCityAt8_12() {
         assertThat(game, is(notNullValue()));
         assertThat(game.getCityAt(new Position(8,12)).getOwner(), is(Player.RED));
     }
 
     @Test
-    public void shouldHaveBlueCityat4_5(){
+    public void shouldHaveBlueCityAt4_5(){
         assertThat(game, is(notNullValue()));
         assertThat(game.getCityAt(new Position(4,5)).getOwner(), is(Player.BLUE));
     }
-    @Test
-    public void shouldHaveOceanat1_1(){
-        assertThat(game, is(notNullValue()));
-        assertThat(game.getTileAt(new Position(1, 1)).getTypeString(), is(GameConstants.OCEANS));
-    }
-
 }

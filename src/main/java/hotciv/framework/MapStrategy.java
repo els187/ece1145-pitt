@@ -1,7 +1,10 @@
 package hotciv.framework;
 import hotciv.standard.*;
-import java.util.Map;
+
+import java.util.HashMap;
 
 public interface MapStrategy {
-    public default Map<Position, Tile> defineWorld() {return null;}
+    HashMap<Position, TileImpl> defineTilesLayout();
+    HashMap<Position, UnitImpl> defineUnitsLayout();
+    HashMap<Position, CityImpl> defineCitiesLayout();
 }
