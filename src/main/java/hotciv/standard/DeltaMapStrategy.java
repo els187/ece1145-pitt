@@ -79,11 +79,11 @@ public class DeltaMapStrategy implements MapStrategy {
 
     @Override
     public HashMap<Position, UnitImpl> defineUnitsLayout () {
-        return null;
+        return units;
     }
 
     @Override
     public HashMap<Position, CityImpl> defineCitiesLayout () {
-        return null;
+        return cities;
     }
 }
