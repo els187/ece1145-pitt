@@ -3,17 +3,14 @@ package hotciv.standard;
 import hotciv.framework.*;
 import hotciv.framework.Player;
 
-public class BetaWinningStrategy implements WinningStrategy{
-    public Player winner;
+public class BetaWinningStrategy implements WinningStrategy {
     @Override
     public Player getStrategicWinner(GameImpl game) {
-        winner = Player.RED;
-        for(Position p: game.getCities().keySet()){
-            CityImpl city = (CityImpl) game.getCityAt(p);
-            if(!city.getOwner().equals(winner)){
-                winner = city.getOwner();
+        for (Position p : game.cities.keySet()) {
+            if(game.getCityAt(p).getOwner() != game.getPlayerInTurn()){
+                return null;
             }
         }
-        return winner;
+        return game.getPlayerInTurn();
     }
 }

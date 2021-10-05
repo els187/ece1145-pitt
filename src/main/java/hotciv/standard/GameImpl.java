@@ -32,50 +32,32 @@ import java.util.*;
 
 public class GameImpl implements Game {
   private Player playerInTurn = Player.RED;
+  private Player winner;
   private int age = -4000;
   private AgingStrategy agingStrategy;
   private WinningStrategy winningStrategy;
   private MapStrategy mapStrategy;
 
-  private HashMap<Position, City> cities  = new HashMap<Position, City>();
-  private HashMap<Position, Unit> units = new HashMap<Position, Unit>();
-  private HashMap<Position, Tile> tiles = new HashMap<Position, Tile>();
 
-  public GameImpl(AgingStrategy agingStrategy, WinningStrategy winningStrategy, MapStrategy mapStrategy){
+  public HashMap<Position, CityImpl> cities;
+  public HashMap<Position, UnitImpl> units;
+  public HashMap<Position, TileImpl> tiles;
+
+  public GameImpl(AgingStrategy agingStrategy, WinningStrategy winningStrategy, MapStrategy mapStrategy) {
     this.agingStrategy = agingStrategy;
     this.winningStrategy = winningStrategy;
     this.mapStrategy = mapStrategy;
-/** This code is for AlphaCiv. Temporarily commented out for DeltaCiv to work.
-    for(int i = 0; i < GameConstants.WORLDSIZE;i++){
-      for(int j = 0; j < GameConstants.WORLDSIZE;j++){
-        tiles.put(new Position(i, j), new TileImpl(GameConstants.PLAINS));
-      }
-    }
-
-    //Set tiles to be of types oceans, hill, mountains
-    tiles.put(new Position(1, 0), new TileImpl(GameConstants.OCEANS));
-    tiles.put(new Position(0, 1), new TileImpl(GameConstants.HILLS));
-    tiles.put(new Position(2, 2), new TileImpl(GameConstants.MOUNTAINS));
-
-    //Set units to be of red archers, blue legions, red settlers
-    units.put(new Position(2,0), new UnitImpl(GameConstants.ARCHER, Player.RED));
-    units.put(new Position(3,2), new UnitImpl(GameConstants.LEGION, Player.BLUE));;
-    units.put(new Position(4,3), new UnitImpl(GameConstants.SETTLER, Player.RED));
-
-
-    //Set cities to be owned by red and blue
-   // cities.put(new Position(8,12), new CityImpl(Player.RED));
-   //cities.put(new Position(4,5), new CityImpl(Player.BLUE));
-*/
   }
 
-  public Tile getTileAt( Position p ) {
+  public TileImpl getTileAt(Position p) {
     return tiles.get(p);
   }
-  public Unit getUnitAt( Position p ) {
+
+  public UnitImpl getUnitAt(Position p) {
     return units.get(p);
   }
-  public City getCityAt( Position p ) {
+
+  public CityImpl getCityAt(Position p) {
     return cities.get(p);
   }
 
@@ -91,105 +73,116 @@ public class GameImpl implements Game {
     return age;
   }
 
-  public boolean moveUnit( Position from, Position to ) {
-    Unit unitFrom = getUnitAt(from);
-    Tile tileTo = getTileAt(to);
-    UnitImpl unitChoice = (UnitImpl) unitFrom;
-
-    //Check if unit is fortified
-    if (unitChoice.getFortified()) return false;
-
-    //Check if the destinationTile contains Mountains or Oceans
-    if(tileTo.getTypeString().equals(GameConstants.MOUNTAINS)  || tileTo.getTypeString().equals(GameConstants.OCEANS)){
+  public boolean moveUnit(Position from, Position to) {
+    //Check if distance is less than 1
+    if(!distanceIsValid(from, to)){
+      return false;
+    }
+    //Check if destination tile contains mountains or oceans
+    if(!tileTypeIsValid(to)){
       return false;
     }
 
-    //Check if the player is trying to move another player's unit
-    if (unitFrom.getOwner() != playerInTurn)
+    Unit unitFrom = units.get(from);
+    Unit unitTo = units.get(to);
+
+    //Remove if the destination tile is already occupied
+    if (unitTo != null) {
+      units.remove(unitTo);
+    }
+
+    //If playerInTurn is trying to move another player's unit, return false
+    if(unitFrom.getOwner() != getPlayerInTurn()) {
       return false;
-
-    //If destination tile is less than 1 unit from sourceTile, then move it
-    if (Math.abs(to.getRow() - from.getRow()) <= 1 && Math.abs(to.getColumn() - from.getColumn()) <= 1) {
-      //If destination tile isn't occupied then move the unit and remove unit from old position
-      if(getUnitAt(to) == null) {
-        units.put(to, unitFrom);
-        units.remove(from);
-        return true;
-      } //at this point, we have checked if the tile is occupied, so we can check if attack
-      if(attackOnEnemySucceeded(from, to)) {return true;}
     }
-    return false;
-  }
 
-  //In Alpha Civ, the attacker is always successful.
-  private boolean attackOnEnemySucceeded(Position from, Position to) {
-    boolean successfulAttack = true;
-    if (successfulAttack) {
-      units.put(to, getUnitAt(from));
-      units.remove(from);
-      return true;
+    //Place the unit at the destination and remove the unit from the source tile, decrement the move count
+    units.put(to, new UnitImpl(unitFrom.getTypeString(), unitFrom.getOwner()));
+    units.remove(from);
+    units.get(to).setMoveCount(units.get(to).getMoveCount() - 1);
+
+    //If city is not owned by anyone, set the owner
+    if(getCityAt(to) != null) {
+      getCityAt(to).setOwner(unitFrom.getOwner());
     }
-    return false;
+    return true;
   }
 
   public void endOfTurn() {
-    //If current player is red, switch to blue and add 6 productions
-    if(playerInTurn == Player.RED){
+    if (playerInTurn == Player.RED) {
       playerInTurn = Player.BLUE;
-      CityImpl blueCity = (CityImpl) getCityAt(new Position(4,1));
-      blueCity.setTreasury(6);
+
     } else {
-      //If current player is blue, switch to red and add 6 productions
       playerInTurn = Player.RED;
-      CityImpl redCity = (CityImpl) getCityAt(new Position(1,1));
-      redCity.setTreasury(6);
+      produceUnits();
       age = agingStrategy.getStrategicAging(age);
+      winner = getWinner();
+
     }
   }
 
-  public void changeWorkForceFocusInCityAt( Position p, String balance ) {}
-
-  public void changeProductionInCityAt( Position p, String unitType ) {
-    CityImpl city = (CityImpl) cities.get(p);
-    city.setProduction(unitType);
-    produceUnit(city,p,unitType);
+  public void changeWorkForceFocusInCityAt(Position p, String balance) {
   }
 
-  public void performUnitActionAt( Position p ) {
-    UnitImpl impUnit = (UnitImpl) getUnitAt(p);
-    if (getUnitAt(p).getTypeString()== GameConstants.SETTLER) { //build city at position p (temporary)
-      units.remove(p);
-      cities.put(p, new CityImpl(impUnit.getOwner(), new Position(4, 5)));
-    } else if (getUnitAt(p).getTypeString() == GameConstants.LEGION) {
-      return; //do nothing at position p
-    } else if (getUnitAt(p).getTypeString() == GameConstants.ARCHER) { //fortify at position p
-      impUnit.setFortified();
-      if (impUnit.getFortified() == true) {
-        impUnit.setDefensiveStrength(impUnit.getDefensiveStrength() * 2);
-      } else {
-        impUnit.setDefensiveStrength(impUnit.getDefensiveStrength() / 2);
+  public void changeProductionInCityAt(Position p, String unitType) {
+    CityImpl c = cities.get(p);
+    if(getPlayerInTurn() == c.getOwner())
+      c.setProduction(unitType);
+  }
+
+  public void performUnitActionAt(Position p) {
+  }
+
+  public boolean tileTypeIsValid(Position to){
+    Tile tileTo = getTileAt(to);
+
+    //Check if it is trying to move to mountains or oceans
+    if (tileTo.getTypeString() == GameConstants.MOUNTAINS ||
+            tileTo.getTypeString() == GameConstants.OCEANS){
+      return false;
+    }
+    return true;
+  }
+
+  //Return true if position(to) is already in the adjacent coordinates from the given center(from).
+  public boolean distanceIsValid(Position from, Position to) {
+    for (Position p : Utility.get8neighborhoodOf(from)) {
+      if (p.equals(to)) {
+        return true;
       }
-    } else if (getUnitAt(p).getTypeString() == null) {
-      return;
     }
+    return false;
   }
 
-  //*********************************************METHODS THAT WE ADDED**************************************************
 
-  public void produceUnit(CityImpl c,  Position p, String unitType ){
-    //If unitType is Archer and has enough to buy an archer, produce an Archer
-    if (unitType.equals(GameConstants.ARCHER) && c.getTreasury() >= 10) {
-      c.setProduction(GameConstants.ARCHER);
-      //If unitType is Legion and has enough to buy a legion, produce a Legion
-    } else if (unitType.equals(GameConstants.LEGION) && c.getTreasury() >= 15) {
-      c.setProduction(GameConstants.LEGION);
-      //If unitType is Settler and has enough to buy a settler, produce a Settler
-    } else if (unitType.equals(GameConstants.SETTLER) && c.getTreasury() >= 30) {
-      c.setProduction(GameConstants.SETTLER);
+  public void produceUnits() {
+    for (Position p : cities.keySet()) {
+      CityImpl c = getCityAt(p);
+      c.setTreasury();
+
+      //If treasury is enough then deduct treasury from the unit being produced
+      if (c.getTreasury() >= getUnitCost(c.getProduction())) {
+        c.deductTreasury(getUnitCost(c.getProduction()));
+
+        if (!units.containsKey(p)) {
+          units.put(p, new UnitImpl(c.getProduction(), c.getOwner()));
+        } else {
+          boolean unitPlacementIsSuccessful = false;
+          //Iterating through all possible adjacent coordinates of the tiles and placing it into the first empty space
+          for (Position n : Utility.get8neighborhoodOf(p)) {
+            if (!units.containsKey(n) && unitPlacementIsSuccessful == false) {
+              units.put(n, new UnitImpl(c.getProduction(), c.getOwner()));
+              unitPlacementIsSuccessful = true;
+            }
+          }
+        }
+      }
     }
 
-    //Deduct the unitType's cost from the treasury
-    c.removeTreasury(getUnitCost(c.getProduction()));
+    //Reset the move count
+    for (UnitImpl u : units.values()) {
+      u.setMoveCount(1);
+    }
   }
 
   private int getUnitCost(String type) {
@@ -200,9 +193,5 @@ public class GameImpl implements Game {
       return 15;
     }
     else return 30;
-  }
-
-  public HashMap<Position, City> getCities() {
-    return cities;
   }
 }

@@ -8,10 +8,12 @@ public class UnitImpl implements Unit{
     private boolean fortified;
     private int attack;
     private int defense;
+    private int moveCount;
 
     public UnitImpl(String unitType, Player unitOwner){
         this.unitType = unitType;
         this.unitOwner = unitOwner;
+        this.moveCount = 1;
         this.fortified = false;
         if (unitType.equals(GameConstants.ARCHER)){
             defense = 3;
@@ -35,6 +37,10 @@ public class UnitImpl implements Unit{
 
     public int getMoveCount(){
         return 0;
+    }
+
+    public void setMoveCount(int i) {
+        moveCount = i;
     }
 
     public void setFortified(){

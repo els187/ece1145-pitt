@@ -8,14 +8,9 @@ public class CityImpl implements City{
     private int treasury;
     private String production;
 
-
-    public CityImpl(Player player, Position position) {
+    public CityImpl(Player player) {
         this.cityOwner = player;
-        this.size = 1;
         this.production = GameConstants.ARCHER;
-    }
-
-    public CityImpl(Player red) {
     }
 
     public Player getOwner() {
@@ -23,7 +18,7 @@ public class CityImpl implements City{
     }
 
     public int getSize() {
-        return size;
+        return 1;
     }
 
     public int getTreasury(){
@@ -31,7 +26,6 @@ public class CityImpl implements City{
     }
 
     public String getProduction() {
-        // return GameConstants.ARCHER;
         return production;
     }
 
@@ -39,15 +33,19 @@ public class CityImpl implements City{
         return null;
     }
 
-    public void setTreasury(int n){
-        treasury += n;
+    public void setTreasury(){
+        this.treasury += 6;
     }
 
-    public void removeTreasury(int n){
-        treasury -= n;
+    public void setProduction(String productionType){
+        this.production = productionType;
     }
 
-    public void setProduction(String production) {
-        this.production = production;
+    public void deductTreasury(int unitCost){
+        this.treasury -= unitCost;
+    }
+
+    public void setOwner(Player owner){
+        this.cityOwner = owner;
     }
 }

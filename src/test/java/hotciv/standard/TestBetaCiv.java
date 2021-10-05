@@ -46,4 +46,24 @@ public class TestBetaCiv {
         numberOfRounds(1);
         assertEquals(1972, game.getAge());
     }
+
+
+    @Test
+    public void conqueringAllCitiesIsTheWinner() {
+        game.moveUnit(new Position(4,3), new Position(4,2));
+        game.moveUnit(new Position(4,2), new Position(4,1));
+        assertThat(game.getWinner(), is(Player.RED));
+    }
+
+    @Test
+    public void redConquersBlueCity() {
+        game.moveUnit(new Position (4, 3), new Position (4,2));
+        game.endOfTurn();
+        game.endOfTurn();
+        game.moveUnit(new Position (4, 2), new Position (4,1));
+        City c = game.getCityAt(new Position(4,1));
+        assertEquals(Player.RED, c.getOwner());
+        assertEquals(Player.RED, game.getWinner());
+    }
+
 }
