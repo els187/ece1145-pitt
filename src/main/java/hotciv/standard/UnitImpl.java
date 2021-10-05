@@ -4,10 +4,10 @@ import hotciv.framework.*;
 
 public class UnitImpl implements Unit{
     private String unitType;
-    Player unitOwner;
+    private Player unitOwner;
     private boolean fortified;
-    private int attack;
-    private int defense;
+    private int attackStrength;
+    private int defensiveStrength;
     private int moveCount;
 
     public UnitImpl(String unitType, Player unitOwner){
@@ -15,15 +15,16 @@ public class UnitImpl implements Unit{
         this.unitOwner = unitOwner;
         this.moveCount = 1;
         this.fortified = false;
+
         if (unitType.equals(GameConstants.ARCHER)){
-            defense = 3;
-            attack = 2;
+            defensiveStrength = 3;
+            attackStrength = 2;
         }  else if (unitType.equals(GameConstants.LEGION)) {
-            defense = 2;
-            attack = 4;
+            defensiveStrength = 2;
+            attackStrength = 4;
         } else if (unitType.equals(GameConstants.SETTLER)) {
-            attack = 0;
-            defense = 3;
+            defensiveStrength = 3;
+            attackStrength = 0;
         }
     }
 
@@ -43,23 +44,30 @@ public class UnitImpl implements Unit{
         moveCount = i;
     }
 
-    public void setFortified(){
-        fortified = !fortified;
-    }
-
-    public boolean getFortified(){
-        return fortified;
-    }
-
     public int getDefensiveStrength(){
-        return defense;
+        return defensiveStrength;
     }
 
     public int getAttackingStrength(){
-        return attack;
+        return attackStrength;
     }
 
-    public void setDefensiveStrength(int i) {
-        defense = i;
+    public void fortify(){
+        defensiveStrength *= 2;
+        fortified = true;
+
+    }
+
+    public void deFortify() {
+        defensiveStrength /= 2;
+        fortified = false;
+    }
+
+    public boolean isFortified(){
+        if(fortified == true){
+            return true;
+        } else {
+            return false;
+        }
     }
 }

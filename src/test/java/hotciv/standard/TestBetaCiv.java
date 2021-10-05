@@ -12,9 +12,10 @@ public class TestBetaCiv {
     /**
      * Fixture for betaciv testing.
      */
+
     @Before
     public void setUp() {
-        game = new GameImpl(new BetaAgingStrategy(), new BetaWinningStrategy(), new DeltaMapStrategy());
+        game = new GameImpl(new BetaAgingStrategy(), new BetaWinningStrategy(), new AlphaActionStrategy(), new AlphaMapStrategy());
     }
 
     private void numberOfRounds(int rounds) {
@@ -62,8 +63,7 @@ public class TestBetaCiv {
         game.endOfTurn();
         game.moveUnit(new Position (4, 2), new Position (4,1));
         City c = game.getCityAt(new Position(4,1));
-        assertEquals(Player.RED, c.getOwner());
-        assertEquals(Player.RED, game.getWinner());
+        assertThat(c.getOwner(), is(Player.RED));
+        assertThat(game.getWinner(), is(Player.RED));
     }
-
 }

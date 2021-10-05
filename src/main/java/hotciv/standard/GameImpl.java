@@ -36,6 +36,7 @@ public class GameImpl implements Game {
   private int age = -4000;
   private AgingStrategy agingStrategy;
   private WinningStrategy winningStrategy;
+  private ActionStrategy actionStrategy;
   private MapStrategy mapStrategy;
 
 
@@ -43,9 +44,10 @@ public class GameImpl implements Game {
   public HashMap<Position, UnitImpl> units;
   public HashMap<Position, TileImpl> tiles;
 
-  public GameImpl(AgingStrategy agingStrategy, WinningStrategy winningStrategy, MapStrategy mapStrategy) {
+  public GameImpl(AgingStrategy agingStrategy, WinningStrategy winningStrategy, ActionStrategy actionStrategy, MapStrategy mapStrategy) {
     this.agingStrategy = agingStrategy;
     this.winningStrategy = winningStrategy;
+    this.actionStrategy = actionStrategy;
     this.mapStrategy = mapStrategy;
 
     tiles = mapStrategy.defineTilesLayout();
@@ -90,13 +92,18 @@ public class GameImpl implements Game {
     Unit unitFrom = units.get(from);
     Unit unitTo = units.get(to);
 
-    //Remove if the destination tile is already occupied
-    if (unitTo != null) {
-      units.remove(unitTo);
+    //Remove if the destination tile is already occupied and it is a friendly unit
+    if (unitTo != null && unitFrom.getOwner() == unitTo.getOwner()) {
+      //units.remove(unitTo);
+      return false;
     }
 
     //If playerInTurn is trying to move another player's unit, return false
     if(unitFrom.getOwner() != getPlayerInTurn()) {
+      return false;
+    }
+
+    if (((UnitImpl) unitFrom).isFortified()) {
       return false;
     }
 
@@ -135,6 +142,7 @@ public class GameImpl implements Game {
   }
 
   public void performUnitActionAt(Position p) {
+    actionStrategy.unitAction(p, this);
   }
 
   public boolean tileTypeIsValid(Position to){
@@ -197,5 +205,13 @@ public class GameImpl implements Game {
       return 15;
     }
     else return 30;
+  }
+
+  public void createCity(Position pos, CityImpl c) {
+    cities.put(pos, c);
+  }
+
+  public void removeUnit(Position pos) {
+    units.remove(pos);
   }
 }

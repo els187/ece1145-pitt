@@ -10,9 +10,13 @@ import java.util.*;
 public class TestDeltaCiv {
     private Game game;
 
+    /**
+     * Fixture for deltaciv testing.
+     */
+
     @Before
     public void setUp() {
-        game = new GameImpl(new AlphaAgingStrategy(), new AlphaWinningStrategy(), new DeltaMapStrategy());
+        game = new GameImpl(new AlphaAgingStrategy(), new AlphaWinningStrategy(), new GammaActionStrategy(), new DeltaMapStrategy());
     }
 
     @Test

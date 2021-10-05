@@ -17,7 +17,7 @@ public class TestGammaCiv {
 
     @Before
     public void setUp() {
-        game = new GameImpl(new AlphaAgingStrategy(), new AlphaWinningStrategy(), new DeltaMapStrategy()) {
+        game = new GameImpl(new AlphaAgingStrategy(), new AlphaWinningStrategy(), new GammaActionStrategy(), new AlphaMapStrategy()) {
         };
     }
 
@@ -44,6 +44,29 @@ public class TestGammaCiv {
         game.performUnitActionAt(new Position(2,0));
         assertEquals("Defense should be 3", 3, u.getDefensiveStrength());
         assertThat("Should be able to move non-fortified archer", game.moveUnit(new Position(2,0), new Position(2,1)), is(true));
+    }
+
+    @Test
+    public void settlerAt4_3IsReplaced(){
+        assertThat(game.getUnitAt(new Position(4,3)), is (notNullValue()));
+        game.performUnitActionAt(new Position(4,3));
+        assertThat(game.getUnitAt(new Position(4,3)), is(nullValue()));
+        assertThat(game.getCityAt(new Position(4,3)), is(notNullValue()));
+    }
+
+    @Test
+    public void newCityHasASizeOfOne() {
+        assertThat(game.getUnitAt(new Position(4,3)), is (notNullValue()));
+        game.performUnitActionAt(new Position(4,3));
+        assertThat(game.getUnitAt(new Position(4,3)), is(nullValue()));
+        assertThat(game.getCityAt(new Position(4,3)).getSize(), is(1));
+    }
+
+    @Test
+    public void archerIsStationary() {
+        assertThat(game.getUnitAt(new Position(2,0 )).getTypeString(), is(GameConstants.ARCHER));
+        game.performUnitActionAt(new Position(2,0));
+        assertFalse(game.moveUnit(new Position(2,0), new Position(2,1)));
     }
 
 }
