@@ -33,7 +33,7 @@ public class CityImpl implements City{
         return null;
     }
 
-    public void setTreasury(){
+    public void incrementTreasury(){
         this.treasury += 6;
     }
 

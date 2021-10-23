@@ -44,7 +44,8 @@ public class GameImpl implements Game {
   public HashMap<Position, UnitImpl> units;
   public HashMap<Position, TileImpl> tiles;
 
-  public GameImpl(AgingStrategy agingStrategy, WinningStrategy winningStrategy, ActionStrategy actionStrategy, MapStrategy mapStrategy) {
+  public GameImpl(AgingStrategy agingStrategy, WinningStrategy winningStrategy,
+                  ActionStrategy actionStrategy, MapStrategy mapStrategy) {
     this.agingStrategy = agingStrategy;
     this.winningStrategy = winningStrategy;
     this.actionStrategy = actionStrategy;
@@ -92,7 +93,7 @@ public class GameImpl implements Game {
     Unit unitFrom = units.get(from);
     Unit unitTo = units.get(to);
 
-    //Remove if the destination tile is already occupied and it is a friendly unit
+    //Return false if the destination tile is already occupied and if it is a friendly unit
     if (unitTo != null && unitFrom.getOwner() == unitTo.getOwner()) {
       //units.remove(unitTo);
       return false;
@@ -128,7 +129,6 @@ public class GameImpl implements Game {
       produceUnits();
       age = agingStrategy.getStrategicAging(age);
       winner = getWinner();
-
     }
   }
 
@@ -145,7 +145,30 @@ public class GameImpl implements Game {
     actionStrategy.unitAction(p, this);
   }
 
-  public boolean tileTypeIsValid(Position to){
+  public void produceUnits() {
+    for (Position p : cities.keySet()) {
+      CityImpl c = getCityAt(p);
+      c.incrementTreasury();
+
+      boolean treasuryIsEnough = c.getTreasury() >= getUnitCost(c.getProduction());
+      boolean unitIsPresent = units.containsKey(p);
+
+      //If treasury is enough then deduct treasury from the unit being produced
+      if (treasuryIsEnough) {
+        c.deductTreasury(getUnitCost(c.getProduction()));
+        //If unit is not present, place it directly
+        if (!unitIsPresent) {
+          units.put(p, new UnitImpl(c.getProduction(), c.getOwner()));
+        } else {
+          //If unit is present, place it clockwise starting from North
+          placeUnitsClockwise(p, c);
+        }
+      }
+    }
+    resetMoveCount();
+  }
+
+  public boolean tileTypeIsValid(Position to) {
     Tile tileTo = getTileAt(to);
 
     //Check if it is trying to move to mountains or oceans
@@ -166,31 +189,18 @@ public class GameImpl implements Game {
     return false;
   }
 
-
-  public void produceUnits() {
-    for (Position p : cities.keySet()) {
-      CityImpl c = getCityAt(p);
-      c.setTreasury();
-
-      //If treasury is enough then deduct treasury from the unit being produced
-      if (c.getTreasury() >= getUnitCost(c.getProduction())) {
-        c.deductTreasury(getUnitCost(c.getProduction()));
-
-        if (!units.containsKey(p)) {
-          units.put(p, new UnitImpl(c.getProduction(), c.getOwner()));
-        } else {
-          boolean unitPlacementIsSuccessful = false;
-          //Iterating through all possible adjacent coordinates of the tiles and placing it into the first empty space
-          for (Position n : Utility.get8neighborhoodOf(p)) {
-            if (!units.containsKey(n) && unitPlacementIsSuccessful == false) {
-              units.put(n, new UnitImpl(c.getProduction(), c.getOwner()));
-              unitPlacementIsSuccessful = true;
-            }
-          }
-        }
+  public void placeUnitsClockwise(Position pos, City c) {
+    boolean unitPlacementIsSuccessful = false;
+    //Iterating through all possible adjacent coordinates of the tiles and placing it into the first empty space
+    for (Position n : Utility.get8neighborhoodOf(pos)) {
+      if (!units.containsKey(n) && unitPlacementIsSuccessful == false) {
+        units.put(n, new UnitImpl(c.getProduction(), c.getOwner()));
+        unitPlacementIsSuccessful = true;
       }
     }
+  }
 
+  public void resetMoveCount() {
     //Reset the move count
     for (UnitImpl u : units.values()) {
       u.setMoveCount(1);
