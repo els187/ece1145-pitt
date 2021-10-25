@@ -81,6 +81,27 @@ public class GameImpl implements Game {
   }
 
   public boolean moveUnit(Position from, Position to) {
+
+    Unit unitFrom = units.get(from);
+    Unit unitTo = units.get(to);
+
+    if (((UnitImpl) unitFrom).isFortified()) {
+      return false;
+    }
+
+    //Place the unit at the destination and remove the unit from the source tile, decrement the move count
+    units.put(to, new UnitImpl(unitFrom.getTypeString(), unitFrom.getOwner()));
+    units.remove(from);
+    units.get(to).setMoveCount(units.get(to).getMoveCount() - 1);
+
+    //If city is not owned by anyone, set the owner
+    if(getCityAt(to) != null) {
+      getCityAt(to).setOwner(unitFrom.getOwner());
+    }
+    return true;
+  }
+
+  public boolean checkValidMove(Position from, Position to){
     //Check if distance is less than 1
     if(!distanceIsValid(from, to)){
       return false;
@@ -103,23 +124,9 @@ public class GameImpl implements Game {
     if(unitFrom.getOwner() != getPlayerInTurn()) {
       return false;
     }
-
-    if (((UnitImpl) unitFrom).isFortified()) {
-      return false;
-    }
-
-    //Place the unit at the destination and remove the unit from the source tile, decrement the move count
-    units.put(to, new UnitImpl(unitFrom.getTypeString(), unitFrom.getOwner()));
-    units.remove(from);
-    units.get(to).setMoveCount(units.get(to).getMoveCount() - 1);
-
-    //If city is not owned by anyone, set the owner
-    if(getCityAt(to) != null) {
-      getCityAt(to).setOwner(unitFrom.getOwner());
-    }
-    return true;
   }
 
+  //Finishes the players turn and moves to the next turn
   public void endOfTurn() {
     if (playerInTurn == Player.RED) {
       playerInTurn = Player.BLUE;
