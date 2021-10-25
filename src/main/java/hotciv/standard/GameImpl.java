@@ -81,6 +81,9 @@ public class GameImpl implements Game {
   }
 
   public boolean moveUnit(Position from, Position to) {
+    if(!checkValidMove(from, to)){
+      return false;
+    }
 
     Unit unitFrom = units.get(from);
     Unit unitTo = units.get(to);
@@ -124,6 +127,7 @@ public class GameImpl implements Game {
     if(unitFrom.getOwner() != getPlayerInTurn()) {
       return false;
     }
+    return true;
   }
 
   //Finishes the players turn and moves to the next turn
