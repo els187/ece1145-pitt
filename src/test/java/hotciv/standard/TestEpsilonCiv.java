@@ -14,6 +14,9 @@ public class TestEpsilonCiv {
 
     @Before
     public void setUp() {
-        game = new GameImpl(new BetaAgingStrategy(), new BetaWinningStrategy(), new AlphaActionStrategy(), new AlphaMapStrategy(), new EpsilonBattleStrategy());
+        game = new GameImpl(new AlphaAgingStrategy(), new EpsilonWinningStrategy(),
+                new AlphaActionStrategy(), new AlphaMapStrategy(),
+                new EpsilonBattleStrategy(new EpsilonDieRollStrategy(), new EpsilonDieRollStrategy()));
     }
+    
 }

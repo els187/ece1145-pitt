@@ -251,4 +251,12 @@ public class GameImpl implements Game {
   public void removeUnit(Position pos) {
     units.remove(pos);
   }
+
+  public int getBluePlayerWins(){
+    return bluePlayerWins;
+  }
+
+  public int getRedPlayerWins(){
+    return redPlayerWins;
+  }
 }
