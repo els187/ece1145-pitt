@@ -27,8 +27,9 @@ public class TestAlphaCiv {
     game = new GameImpl(new AlphaAgingStrategy(), new AlphaWinningStrategy(), new GammaActionStrategy(), new AlphaMapStrategy(), new AlphaBattleStrategy());
   }
 
-  private void playRounds(int rounds) {
-    for (int i = 0; i < rounds * 2; i++) {
+  private void numberOfRounds(int rounds) {
+    for (int i = 0; i < rounds; i++) {
+      game.endOfTurn();
       game.endOfTurn();
     }
   }
@@ -53,8 +54,7 @@ public class TestAlphaCiv {
 
   @Test
   public void ageIncreasesAfterEveryRound() {
-    game.endOfTurn();
-    game.endOfTurn();
+    numberOfRounds(1);
     assertThat(game, is(notNullValue()));
     assertThat(game.getAge(), is(-3900));
   }
@@ -221,15 +221,12 @@ public class TestAlphaCiv {
     assertThat(game.getCityAt(new Position(4, 1)), is(notNullValue()));
     assertThat(game.getUnitAt(new Position(4, 1)), is(nullValue()));
     blueCity.setProduction(GameConstants.LEGION);
-    game.endOfTurn();
-    game.endOfTurn();
+    numberOfRounds(1);
     assertThat(game.getCityAt(new Position(4, 1)).getTreasury(), is(6));
-    game.endOfTurn();
-    game.endOfTurn();
+    numberOfRounds(1);
     assertThat(game.getCityAt(new Position(4, 1)).getTreasury(), is(12));
     assertThat(game.getUnitAt(new Position(4, 1)), is(nullValue()));
-    game.endOfTurn();
-    game.endOfTurn();
+    numberOfRounds(1);
     assertThat(game.getUnitAt(new Position(4, 1)).getTypeString(), is(GameConstants.LEGION));
     assertThat(game.getCityAt(new Position(4, 1)).getTreasury(), is(3));
   }
