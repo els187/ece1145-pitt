@@ -34,22 +34,24 @@ public class GameImpl implements Game {
   private Player playerInTurn = Player.RED;
   private Player winner;
   private int age = -4000;
+  private int bluePlayerWins = 0;
+  private int redPlayerWins = 0;
+
   private AgingStrategy agingStrategy;
   private WinningStrategy winningStrategy;
   private ActionStrategy actionStrategy;
-  private MapStrategy mapStrategy;
-
+  private BattleStrategy battleStrategy;
 
   public HashMap<Position, CityImpl> cities;
   public HashMap<Position, UnitImpl> units;
   public HashMap<Position, TileImpl> tiles;
 
   public GameImpl(AgingStrategy agingStrategy, WinningStrategy winningStrategy,
-                  ActionStrategy actionStrategy, MapStrategy mapStrategy) {
+                  ActionStrategy actionStrategy, MapStrategy mapStrategy, BattleStrategy battleStrategy) {
     this.agingStrategy = agingStrategy;
     this.winningStrategy = winningStrategy;
     this.actionStrategy = actionStrategy;
-    this.mapStrategy = mapStrategy;
+    this.battleStrategy = battleStrategy;
 
     tiles = mapStrategy.defineTilesLayout();
     units = mapStrategy.defineUnitsLayout();
@@ -90,6 +92,20 @@ public class GameImpl implements Game {
 
     if (((UnitImpl) unitFrom).isFortified()) {
       return false;
+    }
+
+    if(unitTo != null){
+      if (battleStrategy.getBattleOutcome(this, from, to)) {
+        units.remove(to);
+        if (unitFrom.getOwner().equals(Player.RED)) {
+          redPlayerWins++;
+        } else {
+          bluePlayerWins++;
+        }
+      } else {
+        units.remove(from);
+        return true;
+      }
     }
 
     //Place the unit at the destination and remove the unit from the source tile, decrement the move count
