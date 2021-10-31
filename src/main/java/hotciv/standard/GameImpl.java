@@ -248,6 +248,10 @@ public class GameImpl implements Game {
     cities.put(pos, c);
   }
 
+  public void createUnit(Position pos, UnitImpl u) {
+    units.put(pos, u);
+  }
+
   public void removeUnit(Position pos) {
     units.remove(pos);
   }

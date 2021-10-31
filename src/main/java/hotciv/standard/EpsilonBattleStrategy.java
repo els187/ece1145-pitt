@@ -2,21 +2,18 @@ package hotciv.standard;
 import hotciv.framework.*;
 
 public class EpsilonBattleStrategy implements BattleStrategy {
-    private DieRollStrategy attackingProbability;
-    private DieRollStrategy defendingProbability;
+    private DieRollStrategy dieRollStrategy;
 
-    public EpsilonBattleStrategy(DieRollStrategy attackingProbability, DieRollStrategy defendingProbability){
-        this.attackingProbability = attackingProbability;
-        this.defendingProbability = defendingProbability;
+    public EpsilonBattleStrategy(DieRollStrategy dieRollStrategy){
+        this.dieRollStrategy = dieRollStrategy;
     }
-
 
     public int calculateAttackingStrength(Game game, Position from){
         Unit attackingUnit = game.getUnitAt(from);
         int attackingStrength = attackingUnit.getAttackingStrength();
         attackingStrength += Utility2.getFriendlySupport(game, from, attackingUnit.getOwner());
         attackingStrength *= Utility2.getTerrainFactor(game, from);
-        attackingStrength *= attackingProbability.getDieRoll();
+        attackingStrength *= dieRollStrategy.getDieRoll();
         return attackingStrength;
     }
 
@@ -25,7 +22,7 @@ public class EpsilonBattleStrategy implements BattleStrategy {
         int defendingStrength = defendingUnit.getDefensiveStrength();
         defendingStrength += Utility2.getFriendlySupport(game, to, defendingUnit.getOwner());
         defendingStrength *= Utility2.getTerrainFactor(game, to);
-        defendingStrength *= defendingProbability.getDieRoll();
+        defendingStrength *= dieRollStrategy.getDieRoll();
         return defendingStrength;
     }
 
