@@ -153,4 +153,66 @@ public class TestEpsilonCiv {
 
         assertThat(game.getWinner(), is(nullValue()));
     }
+
+    @Test
+    public void attackerGetsRemovedUponDefeat() {
+        game.createUnit(new Position(8,9), new UnitImpl(GameConstants.SETTLER, Player.BLUE));
+        game.createUnit(new Position(8,7), new UnitImpl(GameConstants.SETTLER, Player.BLUE));
+        game.createUnit(new Position(8,8), new UnitImpl(GameConstants.LEGION, Player.BLUE));
+        game.createUnit(new Position(7,8), new UnitImpl(GameConstants.ARCHER, Player.RED));
+
+        //Red archer to blue legion position
+        game.moveUnit(new Position(7,8), new Position(8,8));
+
+        //Red archer gets removed
+        assertThat(game.getUnitAt(new Position(7,8)), is(nullValue()));
+
+        //Blue remains still
+        assertThat(game.getUnitAt(new Position(8,8)).getOwner(), is(Player.BLUE));
+    }
+
+    @Test
+    public void redArcherGetsTerrainBonusOn() {
+        EpsilonBattleStrategy attackingStrategy = new EpsilonBattleStrategy(new DieRollStub());
+
+        //Red archer on hill
+        game.createUnit(new Position(0, 1), new UnitImpl(GameConstants.ARCHER, Player.RED));
+
+        int attackingStrength = attackingStrategy.calculateAttackingStrength(game,new Position(0, 1));
+        int defensiveStrength = attackingStrategy.calculateDefendingStrength(game,new Position(0, 1));
+
+        //(unitStrength + support) * terrainFactor * dieRoll
+        assertThat(attackingStrength, is((2 + 0) * 2 * 1));
+        assertThat(defensiveStrength, is((3 + 0) * 2 * 1));
+    }
+
+    @Test
+    public void defenderWinsWithSupport() {
+        game.createUnit(new Position(11,11), new UnitImpl(GameConstants.LEGION, Player.RED));
+        game.createUnit(new Position(12,12), new UnitImpl(GameConstants.LEGION, Player.BLUE));
+        game.createUnit(new Position(12,13), new UnitImpl(GameConstants.ARCHER, Player.BLUE));
+        game.createUnit(new Position(13,12), new UnitImpl(GameConstants.SETTLER, Player.BLUE));
+        assertThat(Utility2.getFriendlySupport(game ,new Position (11,11), game.getUnitAt(new Position (11,11)).getOwner()), is(0));
+        assertThat(Utility2.getFriendlySupport(game ,new Position (12,12), game.getUnitAt(new Position (12,12)).getOwner()), is(2));
+        assertThat(Utility2.getTerrainFactor(game, new Position(11,11)), is(1));
+        assertThat(Utility2.getTerrainFactor(game, new Position(12,12)), is(1));
+        game.moveUnit(new Position(11,11), new Position(12,12));
+        assertThat(game.getUnitAt(new Position(12,12)).getOwner(), is(Player.BLUE));
+        assertThat(game.getUnitAt(new Position(11,11)), is(nullValue()));
+    }
+
+    @Test
+    public void attackerWinsWithSupport() {
+        game.createUnit(new Position(11,11), new UnitImpl(GameConstants.ARCHER, Player.RED));
+        game.createUnit(new Position(11,10), new UnitImpl(GameConstants.SETTLER, Player.RED));
+
+        game.createUnit(new Position(12,12), new UnitImpl(GameConstants.LEGION, Player.BLUE));
+        assertThat(Utility2.getFriendlySupport(game ,new Position (11,11), game.getUnitAt(new Position (11,11)).getOwner()), is(1));
+        assertThat(Utility2.getFriendlySupport(game ,new Position (12,12), game.getUnitAt(new Position (12,12)).getOwner()), is(0));
+        assertThat(Utility2.getTerrainFactor(game, new Position(11,11)), is(1));
+        assertThat(Utility2.getTerrainFactor(game, new Position(12,12)), is(1));
+        game.moveUnit(new Position(11,11), new Position(12,12));
+        assertThat(game.getUnitAt(new Position(12,12)).getOwner(), is(Player.RED));
+        assertThat(game.getUnitAt(new Position(12,12)).getTypeString(), is(GameConstants.ARCHER));
+    }
 }
