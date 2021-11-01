@@ -15,7 +15,7 @@ public class TestBetaCiv {
 
     @Before
     public void setUp() {
-        game = new GameImpl(new BetaAgingStrategy(), new BetaWinningStrategy(), new AlphaActionStrategy(), new AlphaMapStrategy(), new AlphaBattleStrategy());
+        game = new GameImpl(new BetaCivFactory());
     }
 
     private void numberOfRounds(int rounds) {

@@ -46,16 +46,15 @@ public class GameImpl implements Game {
   public HashMap<Position, UnitImpl> units;
   public HashMap<Position, TileImpl> tiles;
 
-  public GameImpl(AgingStrategy agingStrategy, WinningStrategy winningStrategy,
-                  ActionStrategy actionStrategy, MapStrategy mapStrategy, BattleStrategy battleStrategy) {
-    this.agingStrategy = agingStrategy;
-    this.winningStrategy = winningStrategy;
-    this.actionStrategy = actionStrategy;
-    this.battleStrategy = battleStrategy;
+  public GameImpl(GameFactory gameFactory) {
+    this.agingStrategy = gameFactory.agingStrategy();
+    this.winningStrategy = gameFactory.winningStrategy();
+    this.actionStrategy = gameFactory.actionStrategy();
+    this.battleStrategy = gameFactory.battleStrategy();
 
-    tiles = mapStrategy.defineTilesLayout();
-    units = mapStrategy.defineUnitsLayout();
-    cities = mapStrategy.defineCitiesLayout();
+    tiles = gameFactory.mapStrategy().defineTilesLayout();
+    units = gameFactory.mapStrategy().defineUnitsLayout();
+    cities = gameFactory.mapStrategy().defineCitiesLayout();
   }
 
   public TileImpl getTileAt(Position p) {

@@ -24,7 +24,7 @@ public class TestAlphaCiv {
 
   @Before
   public void setUp() {
-    game = new GameImpl(new AlphaAgingStrategy(), new AlphaWinningStrategy(), new GammaActionStrategy(), new AlphaMapStrategy(), new AlphaBattleStrategy());
+    game = new GameImpl(new AlphaCivFactory());
   }
 
   private void numberOfRounds(int rounds) {
