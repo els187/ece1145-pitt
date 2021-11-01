@@ -1,5 +1,7 @@
 package hotciv.standard;
 import hotciv.framework.*;
+import hotciv.standard.GameImpl;
+import java.util.Map;
 
 public class ZetaWinningStrategy implements WinningStrategy{
 
@@ -14,35 +16,22 @@ public class ZetaWinningStrategy implements WinningStrategy{
         this.state = null;
     }
 
-    //determine winning strategy
 
-
-    @Override
-    public Player getStrategicWinner(GameImpl game) {
-        return null;
+    public Player getStrategicWinner(Map<Position, CityImpl> cities, int age) {
+        if (TwentyRoundsHavePassed() ) {
+            state = EpsilonWinningStrategy;
+        } else {
+            state = BetaWinningStrategy;
+        }
+        return state.getStrategicWinner(cities, age);
     }
 
-
-
-    /* @Override //BetaCiv Winning Strat: first player to conquer all in the world
-    public Player getStrategicWinner(GameImpl game) {
-
-        //while num rounds is < 20
-        for (Position p : game.cities.keySet()) {
-            if(game.getCityAt(p).getOwner() != game.getPlayerInTurn()){
-                return null;
+    private boolean TwentyRoundsHavePassed() {
+            if (numRounds > 20) {
+                return true;
+            } else {
+                return false;
             }
-        }
+    }
 
-        //EpsilonCiv --
-        // if (numRounds > 20) { if game lasts longer than 20 rounds
-        if (game.getRedPlayerWins() >= 3) {
-            return Player.RED;
-        } else if (game.getBluePlayerWins() >= 3) {
-            return Player.BLUE;
-        } else {
-            return null;
-        }
-    //return game.getPlayerInTurn();
-    */
 }

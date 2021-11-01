@@ -36,6 +36,7 @@ public class GameImpl implements Game {
   private int age = -4000;
   private int bluePlayerWins = 0;
   private int redPlayerWins = 0;
+  public int numRounds = 0;
 
   private AgingStrategy agingStrategy;
   private WinningStrategy winningStrategy;
@@ -155,9 +156,8 @@ public class GameImpl implements Game {
       produceUnits();
       age = agingStrategy.getStrategicAging(age);
       winner = getWinner();
+      numRounds++;
     }
-    double numRounds = 0;
-    numRounds = numRounds + .5;
   }
 
   public void changeWorkForceFocusInCityAt(Position p, String balance) {
