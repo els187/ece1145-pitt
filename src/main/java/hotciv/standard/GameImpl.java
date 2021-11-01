@@ -264,4 +264,6 @@ public class GameImpl implements Game {
   public int getRedPlayerWins(){
     return redPlayerWins;
   }
+
+  public int getNumRounds() {return numRounds;}
 }

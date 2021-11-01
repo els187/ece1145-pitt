@@ -18,20 +18,11 @@ public class ZetaWinningStrategy implements WinningStrategy{
 
 
     public Player getStrategicWinner(GameImpl game) {
-        if (TwentyRoundsHavePassed() ) {
+        if (game.getNumRounds() > 20 ) {
             state = EpsilonWinningStrategy;
         } else {
             state = BetaWinningStrategy;
         }
         return state.getStrategicWinner(game);
     }
-
-    private boolean TwentyRoundsHavePassed() {
-            if (numRounds > 20) {
-                return true;
-            } else {
-                return false;
-            }
-    }
-
 }
