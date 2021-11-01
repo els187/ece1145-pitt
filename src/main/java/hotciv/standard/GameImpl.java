@@ -157,6 +157,8 @@ public class GameImpl implements Game {
       age = agingStrategy.getStrategicAging(age);
       winner = getWinner();
     }
+    double numRounds = 0;
+    numRounds = numRounds + .5;
   }
 
   public void changeWorkForceFocusInCityAt(Position p, String balance) {
