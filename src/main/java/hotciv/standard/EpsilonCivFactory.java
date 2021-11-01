@@ -1,7 +1,12 @@
 package hotciv.standard;
 import hotciv.framework.*;
 
-public class ZetaCivFactory implements GameFactory{
+public class EpsilonCivFactory implements GameFactory{
+    private DieRollStrategy dieRollStrategy;
+
+    EpsilonCivFactory(DieRollStrategy rollStrategy) {
+        this.dieRollStrategy = rollStrategy;
+    }
 
     @Override
     public AgingStrategy agingStrategy() {
@@ -10,8 +15,7 @@ public class ZetaCivFactory implements GameFactory{
 
     @Override
     public WinningStrategy winningStrategy() {
-        //Change this when implementation of ZetaCiv is finished
-        return new AlphaWinningStrategy();
+        return new EpsilonWinningStrategy();
     }
 
     @Override
@@ -26,6 +30,6 @@ public class ZetaCivFactory implements GameFactory{
 
     @Override
     public BattleStrategy battleStrategy() {
-        return new AlphaBattleStrategy();
+        return new EpsilonBattleStrategy(dieRollStrategy);
     }
 }
