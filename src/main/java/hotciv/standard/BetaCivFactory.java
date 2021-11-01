@@ -1,17 +1,16 @@
 package hotciv.standard;
 import hotciv.framework.*;
 
-public class ZetaCivFactory implements GameFactory{
+public class BetaCivFactory implements GameFactory{
 
     @Override
     public AgingStrategy agingStrategy() {
-        return new AlphaAgingStrategy();
+        return new BetaAgingStrategy();
     }
 
     @Override
     public WinningStrategy winningStrategy() {
-        //Change this when implementation of ZetaCiv is finished
-        return new AlphaWinningStrategy();
+        return new BetaWinningStrategy();
     }
 
     @Override

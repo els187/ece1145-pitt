@@ -1,7 +1,7 @@
 package hotciv.standard;
 import hotciv.framework.*;
 
-public class ZetaCivFactory implements GameFactory{
+public class AlphaCivFactory implements GameFactory{
 
     @Override
     public AgingStrategy agingStrategy() {
@@ -10,7 +10,6 @@ public class ZetaCivFactory implements GameFactory{
 
     @Override
     public WinningStrategy winningStrategy() {
-        //Change this when implementation of ZetaCiv is finished
         return new AlphaWinningStrategy();
     }
 
