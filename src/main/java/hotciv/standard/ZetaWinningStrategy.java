@@ -17,13 +17,13 @@ public class ZetaWinningStrategy implements WinningStrategy{
     }
 
 
-    public Player getStrategicWinner(Map<Position, CityImpl> cities, int age) {
+    public Player getStrategicWinner(GameImpl game) {
         if (TwentyRoundsHavePassed() ) {
             state = EpsilonWinningStrategy;
         } else {
             state = BetaWinningStrategy;
         }
-        return state.getStrategicWinner(cities, age);
+        return state.getStrategicWinner(game);
     }
 
     private boolean TwentyRoundsHavePassed() {
