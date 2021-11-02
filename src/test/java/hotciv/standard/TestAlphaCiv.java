@@ -19,7 +19,7 @@ public class TestAlphaCiv {
   private Game game;
 
   /**
-   * Fixture for alphaciv testing.
+   * Fixture for AlphaCiv testing.
    */
 
   @Before

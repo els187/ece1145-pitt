@@ -11,7 +11,7 @@ public class TestEpsilonCiv {
     private GameImpl game;
 
     /**
-     * Fixture for epsilonciv testing.
+     * Fixture for EpsilonCiv testing.
      */
 
     @Before

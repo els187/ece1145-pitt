@@ -10,8 +10,7 @@ public class ZetaCivFactory implements GameFactory{
 
     @Override
     public WinningStrategy winningStrategy() {
-        //Change this when implementation of ZetaCiv is finished
-        return new AlphaWinningStrategy();
+        return new ZetaWinningStrategy(new BetaWinningStrategy(), new EpsilonWinningStrategy());
     }
 
     @Override

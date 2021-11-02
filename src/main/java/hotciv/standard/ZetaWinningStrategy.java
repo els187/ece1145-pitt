@@ -1,28 +1,24 @@
 package hotciv.standard;
 import hotciv.framework.*;
-import hotciv.standard.GameImpl;
-import java.util.Map;
 
 public class ZetaWinningStrategy implements WinningStrategy{
 
-    private WinningStrategy BetaWinningStrategy;
-    private WinningStrategy EpsilonWinningStrategy;
-    private WinningStrategy state;
+    BetaWinningStrategy betaWinner;
+    EpsilonWinningStrategy epsilonWinner;
 
     //constructor
-    public ZetaWinningStrategy(WinningStrategy BetaWinningStrategy, WinningStrategy EpsilonWinningStrategy) {
-        this.BetaWinningStrategy = BetaWinningStrategy;
-        this.EpsilonWinningStrategy = EpsilonWinningStrategy;
-        this.state = null;
+    public ZetaWinningStrategy(BetaWinningStrategy betaWinningStrategy, EpsilonWinningStrategy epsilonWinningStrategy) {
+        this.betaWinner = betaWinningStrategy;
+        this.epsilonWinner = epsilonWinningStrategy;
     }
 
-
+    @Override
     public Player getStrategicWinner(GameImpl game) {
-        if (game.getNumRounds() > 20 ) {
-            state = EpsilonWinningStrategy;
-        } else {
-            state = BetaWinningStrategy;
+        if (game.getNumRounds() >= 20 ) {
+            return epsilonWinner.getStrategicWinner(game);
+        } else if(game.getNumRounds() < 20){
+            return betaWinner.getStrategicWinner(game);
         }
-        return state.getStrategicWinner(game);
+        return null;
     }
 }

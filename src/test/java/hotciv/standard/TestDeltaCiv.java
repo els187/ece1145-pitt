@@ -11,7 +11,7 @@ public class TestDeltaCiv {
     private Game game;
 
     /**
-     * Fixture for deltaciv testing.
+     * Fixture for DeltaCiv testing.
      */
 
     @Before
