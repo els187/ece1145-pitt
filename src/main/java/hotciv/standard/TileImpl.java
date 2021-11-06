@@ -12,4 +12,8 @@ public class TileImpl implements Tile{
     public String getTypeString(){
         return terrainType;
     }
+
+    public void setTypeString(String tileType){
+        terrainType = tileType;
+    }
 }

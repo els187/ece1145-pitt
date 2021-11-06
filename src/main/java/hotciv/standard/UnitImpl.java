@@ -6,18 +6,20 @@ public class UnitImpl implements Unit{
     private String unitType;
     private Player unitOwner;
     private boolean fortified;
-    private int attackStrength;
-    private int defensiveStrength;
-    private int moveCount;
+    private int attackStrength, defensiveStrength;
+    private int moveCount = 1;
+    private int ufoMoveCount = 2;
 
     public UnitImpl(String unitType, Player unitOwner){
         this.unitType = unitType;
         this.unitOwner = unitOwner;
-        this.moveCount = 1;
+        setStrengths();
         this.fortified = false;
+    }
 
+    public void setStrengths(){
         if (unitType.equals(GameConstants.ARCHER)){
-            defensiveStrength = 3;
+            this.defensiveStrength = 3;
             attackStrength = 2;
         }  else if (unitType.equals(GameConstants.LEGION)) {
             defensiveStrength = 2;
@@ -25,6 +27,9 @@ public class UnitImpl implements Unit{
         } else if (unitType.equals(GameConstants.SETTLER)) {
             defensiveStrength = 3;
             attackStrength = 0;
+        } else if(unitType.equals(GameConstants.UFO)) {
+            this.defensiveStrength = 8;
+            this.attackStrength = 1;
         }
     }
 
@@ -37,11 +42,19 @@ public class UnitImpl implements Unit{
     }
 
     public int getMoveCount(){
-        return 0;
+        if(unitType.equals(GameConstants.UFO)){
+            return ufoMoveCount;
+        } else {
+            return moveCount;
+        }
     }
 
     public void setMoveCount(int i) {
-        moveCount = i;
+        if(unitType.equals(GameConstants.UFO)){
+            ufoMoveCount = i;
+        } else {
+            moveCount = i;
+        }
     }
 
     public int getDefensiveStrength(){
@@ -55,7 +68,6 @@ public class UnitImpl implements Unit{
     public void fortify(){
         defensiveStrength *= 2;
         fortified = true;
-
     }
 
     public void deFortify() {
@@ -70,4 +82,12 @@ public class UnitImpl implements Unit{
             return false;
         }
     }
+
+    public void setUnitMoveCount() {
+        if (unitType.equals(GameConstants.UFO)) {
+            ufoMoveCount -= 1;
+        } else
+            moveCount -= 1;
+    }
+
 }

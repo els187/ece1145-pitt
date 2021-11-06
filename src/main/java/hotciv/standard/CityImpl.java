@@ -9,6 +9,7 @@ public class CityImpl implements City{
     private String production;
 
     public CityImpl(Player player) {
+        this.size = 1;
         this.cityOwner = player;
         this.production = GameConstants.ARCHER;
     }
@@ -17,11 +18,13 @@ public class CityImpl implements City{
         return cityOwner;
     }
 
+    //Population
     public int getSize() {
-        return 1;
+        return size;
     }
 
-    public int getTreasury(){
+    //Production
+    public int getTreasury() {
         return treasury;
     }
 
@@ -30,22 +33,23 @@ public class CityImpl implements City{
     }
 
     public String getWorkforceFocus() {
-        return null;
+        return GameConstants.productionFocus;
     }
 
-    public void incrementTreasury(){
-        this.treasury += 6;
+    public void setTreasury(int treasury) {
+        this.treasury += treasury;
     }
 
-    public void setProduction(String productionType){
+    public void setProduction(String productionType) {
         this.production = productionType;
     }
 
-    public void deductTreasury(int unitCost){
-        this.treasury -= unitCost;
+
+    public void setOwner(Player owner) {
+        this.cityOwner = owner;
     }
 
-    public void setOwner(Player owner){
-        this.cityOwner = owner;
+    public void setSize(int size){
+        this.size += size;
     }
 }
