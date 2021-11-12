@@ -94,75 +94,20 @@ public class GameImpl implements Game {
       return false;
     }
 
-    if (unitTo != null) {
-      if (battleStrategy.getBattleOutcome(this, from, to)) {
-        units.remove(to);
-        if (unitFrom.getOwner().equals(Player.RED)) {
-          redPlayerWins++;
-        } else {
-          bluePlayerWins++;
-        }
-      } else {
-        units.remove(from);
-        return false;
-      }
+    //Attack the unit to get the battle winner
+    if(unitTo != null && !attackWhenUnitIsPresent(from, to)) {
+      return false;
     }
 
     //Place the unit at the destination and remove the unit from the source tile, decrement the move count
-    units.put(to, new UnitImpl(unitFrom.getTypeString(), unitFrom.getOwner()));
-    units.remove(from);
-    //getUnitAt(to).incrementMoveCount(-1);
+    replaceUnit(from, to);
+
+    //Set the unit move count
     units.get(to).setUnitMoveCount();
 
     //If city is not owned by anyone, set the owner
-    if (getCityAt(to) != null && unitFrom.getTypeString() != GameConstants.UFO) {
-      getCityAt(to).setOwner(unitFrom.getOwner());
-    }
-    return true;
-  }
+    setOwner(to);
 
-  public boolean checkValidMove(Position from, Position to){
-    boolean isUfo = units.get(from).getTypeString().equals(GameConstants.UFO);
-    //Check if destination tile contains mountains or oceans and unit is not UFO
-    if(!tileTypeIsValid(to) && !isUfo){
-      return false;
-    }
-
-    Unit unitFrom = units.get(from);
-    Unit unitTo = units.get(to);
-
-    boolean playerInTurnIsMovingUnit = unitFrom.getOwner() == getPlayerInTurn();
-    //Check if playerInTurn is trying to move its own unit
-    if(!playerInTurnIsMovingUnit) {
-      return false;
-    }
-
-    boolean moveCountIsGreaterThan0 = unitFrom.getMoveCount() >= 0;
-    //Check if move count is greater than 0
-    if(!moveCountIsGreaterThan0){
-      return false;
-    }
-
-    if(unitFrom.getTypeString() == GameConstants.UFO && unitFrom.getMoveCount() == 0){
-      return false;
-    }
-
-    boolean tileIsWithinWorld = tiles.containsKey(to);
-    //Check if to tile is within the 16*16 limit
-    if(!tileIsWithinWorld){
-      return false;
-    }
-
-    //Check if distance is less than 1
-    if(!distanceIsValid(from, to)){
-      return false;
-    }
-
-    //Return false if the destination tile is already occupied and if it is a friendly unit
-    if (unitTo != null && unitFrom.getOwner() == unitTo.getOwner()) {
-      //units.remove(unitTo);
-      return false;
-    }
     return true;
   }
 
@@ -172,11 +117,85 @@ public class GameImpl implements Game {
       playerInTurn = Player.BLUE;
     } else {
       playerInTurn = Player.RED;
+      setTreasuryAtEndOfRound();
       produceUnits();
-      age = agingStrategy.getStrategicAging(age);
-      //winner = getWinner();
+      calculateAge();
+      resetMoveCount();
+      winner = getWinner();
       numRounds++;
     }
+  }
+
+  public void calculateAge(){
+    age = agingStrategy.getStrategicAging(age);
+  }
+
+  public void setOwner(Position to){
+    Unit unitTo = units.get(to);
+
+    if (getCityAt(to) != null && unitTo.getTypeString() != GameConstants.UFO) {
+      getCityAt(to).setOwner(getPlayerInTurn());
+    }
+  }
+
+  public void replaceUnit(Position from, Position to){
+    Unit unitFrom = units.get(from);
+
+    units.put(to, new UnitImpl(unitFrom.getTypeString(), unitFrom.getOwner()));
+    createUnit(to, getUnitAt(from));
+    units.remove(from);
+  }
+
+  public boolean attackWhenUnitIsPresent(Position from, Position to) {
+    if (getUnitAt(from) != null && battleStrategy.getBattleOutcome(this, from, to)) {
+      Unit unitFrom = units.get(from);
+      units.remove(to);
+      if (unitFrom.getOwner().equals(Player.RED)) {
+        redPlayerWins++;
+      } else {
+        bluePlayerWins++;
+      }
+      return true;
+    } else {
+      units.remove(from);
+      return false;
+    }
+  }
+
+  public boolean checkValidMove(Position from, Position to){
+    boolean tileIsWithinWorld = tiles.containsKey(to);
+    //Check if destination tile is within the 16*16 limit
+    if(!tileIsWithinWorld){
+      return false;
+    }
+
+    //Check if distance is less than 1
+    if(!distanceIsValid(from, to)){
+      return false;
+    }
+
+    //Check if destination tile contains mountains or oceans and unit is not UFO
+    if(!tileTypeIsValid(to, from)){
+      return false;
+    }
+
+    Unit unitFrom = units.get(from);
+    Unit unitTo = units.get(to);
+
+    //Check if playerInTurn is trying to move its own unit
+    if(!playerInTurnIsMovingUnit(from)) {
+      return false;
+    }
+
+    if(moveCountEqualsZero(unitFrom)){
+      return false;
+    }
+
+    //Return false if a friendly unit occupies the destination tile
+    if (unitTo != null && unitFrom.getOwner() == unitTo.getOwner()) {
+      return false;
+    }
+    return true;
   }
 
   public void changeWorkForceFocusInCityAt(Position p, String balance) {
@@ -192,43 +211,69 @@ public class GameImpl implements Game {
     actionStrategy.unitAction(p, this);
   }
 
-  public void produceUnits() {
+  public void setTreasuryAtEndOfRound(){
     for (Position p : cities.keySet()) {
       CityImpl c = getCityAt(p);
       c.setTreasury(6);
+    }
+  }
 
+  public void produceUnits() {
+    for (Position pos : cities.keySet()) {
+      CityImpl c = getCityAt(pos);
       boolean treasuryIsEnough = c.getTreasury() >= getUnitCost(c.getProduction());
-      boolean unitIsPresent = units.containsKey(p);
+      boolean unitIsPresent = units.containsKey(pos);
 
       //If treasury is enough then deduct treasury from the unit being produced
       if (treasuryIsEnough) {
         c.setTreasury(-getUnitCost(c.getProduction()));
         //If unit is not present, place it directly
         if (!unitIsPresent) {
-          if(unitTypeIsValid(c)) {
-            units.put(p, new UnitImpl(c.getProduction(), c.getOwner()));
-          }
+          placeUnit(pos, c);
         } else {
           //If unit is present, place it clockwise starting from North
-          if(unitTypeIsValid(c)) {
-            placeUnitsClockwise(p, c);
-          }
+          placeUnitClockwise(pos, c);
         }
       }
     }
-    resetMoveCount();
   }
 
-  public boolean tileTypeIsValid(Position to) {
+  public void placeUnit(Position pos, CityImpl c){
+    //If unit is not present, place it directly
+    if(unitTypeIsValid(c)) {
+      units.put(pos, new UnitImpl(c.getProduction(), c.getOwner()));
+    }
+  }
+
+  public void placeUnitClockwise(Position pos, CityImpl c){
+    //If unit is present, place it clockwise starting from North
+    if(unitTypeIsValid(c)) {
+      placeUnitsClockwise(pos, c);
+    }
+  }
+
+  public boolean tileTypeIsValid(Position to, Position from) {
     Tile tileTo = getTileAt(to);
 
+    boolean isUfo = units.get(from).getTypeString().equals(GameConstants.UFO);
+
     //Check if it is trying to move to mountains or oceans
-    if ((tileTo.getTypeString() == GameConstants.MOUNTAINS) ||
-            (tileTo.getTypeString() == GameConstants.OCEANS)){
+    if ((tileTo.getTypeString() == GameConstants.MOUNTAINS && !isUfo) ||
+            (tileTo.getTypeString() == GameConstants.OCEANS && !isUfo)) {
       return false;
     }
     return true;
   }
+
+  //Check if playerInTurn is trying to move its own unit
+  private boolean playerInTurnIsMovingUnit(Position from) {
+    if(getUnitAt(from) != null && getUnitAt(from).getOwner() != getPlayerInTurn()) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
 
   public boolean unitTypeIsValid(City c){
     if(c.getProduction().equals(GameConstants.ARCHER) || c.getProduction().equals(GameConstants.LEGION) ||
@@ -241,22 +286,21 @@ public class GameImpl implements Game {
 
   //Return true if position(to) is already in the adjacent coordinates from the given center(from).
   public boolean distanceIsValid(Position from, Position to) {
-    for (Position p : Utility.get8neighborhoodOf(from)) {
-      if (p.equals(to)) {
+    for (Position pos : Utility.get8neighborhoodOf(from)) {
+      if (pos.equals(to)) {
         return true;
       }
     }
     return false;
   }
 
-  private boolean checkIfMoveCountIsZero(Unit unit) {
-    if(unit != null && unit.getMoveCount() == 0) {
+  private boolean moveCountEqualsZero(Unit unitFrom) {
+    if(unitFrom != null && unitFrom.getMoveCount() == 0) {
       return true;
     } else {
       return false;
     }
   }
-
 
   public void placeUnitsClockwise(Position pos, City c) {
     boolean unitPlacementIsSuccessful = false;
@@ -272,34 +316,24 @@ public class GameImpl implements Game {
   public void resetMoveCount() {
     //Reset the move count
     for (UnitImpl u : units.values()) {
-      if (checkIfMoveCountIsZero(u)){
+      if (moveCountEqualsZero(u)){
         if(u.getTypeString().equals(GameConstants.UFO)){
           u.setMoveCount(2);
         } else {
           u.setMoveCount(1);
         }
-
       }
-
-//      if(u.getTypeString().equals(GameConstants.UFO)){
-//        u.setMoveCount(2);
-//      } else {
-//        u.setMoveCount(1);
-//      }
     }
   }
 
   private int getUnitCost(String type) {
     if (type.equals(GameConstants.ARCHER)) {
       return 10;
-    }
-    else if (type.equals(GameConstants.LEGION)) {
+    } else if (type.equals(GameConstants.LEGION)) {
       return 15;
-    }
-    else if(type.equals(GameConstants.SETTLER)){
+    } else if(type.equals(GameConstants.SETTLER)){
       return 30;
-    }
-    else {
+    } else {
       //UFO cost
       return 60;
     }

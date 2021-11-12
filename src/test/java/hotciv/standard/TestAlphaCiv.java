@@ -139,10 +139,8 @@ public class TestAlphaCiv {
 
   @Test
   public void citiesProduce6PerRound() {
-    CityImpl blueCity = (CityImpl) game.getCityAt(new Position(4,1));
     assertThat(game.getCityAt(new Position(4, 1)), is(notNullValue())); // there is a city at 4,3
-    game.endOfTurn();
-    game.endOfTurn();
+    numberOfRounds(1);
     assertThat(game.getCityAt(new Position(4, 1)).getTreasury(), is(6));
   }
 
@@ -249,11 +247,13 @@ public class TestAlphaCiv {
   @Test
   public void attackShouldAlwaysBeSuccessful() {
     assertThat(game.moveUnit(new Position(2, 0), new Position(3,0)), is(true));
+    numberOfRounds(2);
     assertThat(game.moveUnit(new Position(3, 0), new Position(3,1)), is(true));
     Unit oldArcherUnit = game.getUnitAt(new Position(3,1));
     assertThat(oldArcherUnit.getTypeString(),is(GameConstants.ARCHER));
     Unit oldLegion = game.getUnitAt((new Position(3, 2)));
     assertThat(oldLegion.getTypeString(),is(GameConstants.LEGION));
+    numberOfRounds(2);
     assertThat(game.moveUnit(new Position(3, 1), new Position(3,2)), is(true));
     Unit newArcherUnit = game.getUnitAt(new Position(3,2));
     assertThat(newArcherUnit.getTypeString(),is(GameConstants.ARCHER));

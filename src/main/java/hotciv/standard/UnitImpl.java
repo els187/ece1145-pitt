@@ -89,5 +89,4 @@ public class UnitImpl implements Unit{
         } else
             moveCount -= 1;
     }
-
 }

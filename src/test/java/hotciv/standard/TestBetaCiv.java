@@ -27,31 +27,32 @@ public class TestBetaCiv {
 
     @Test
     public void worldAgesCorrectly() {
-        assertEquals(-4000, game.getAge());
+        assertThat(game.getAge(), is(-4000));
         numberOfRounds(39);
-        assertEquals(-100, game.getAge());
+        assertThat(game.getAge(), is(-100));
         numberOfRounds(1);
-        assertEquals(-1, game.getAge());
+        assertThat(game.getAge(), is(-1));
         numberOfRounds(1);
-        assertEquals(1, game.getAge());
+        assertThat(game.getAge(), is(1));
         numberOfRounds(1);
-        assertEquals(50, game.getAge());
+        assertThat(game.getAge(), is(50));
         numberOfRounds(34);
-        assertEquals(1750, game.getAge());
+        assertThat(game.getAge(), is(1750));
         numberOfRounds(6);
-        assertEquals(1900, game.getAge());
+        assertThat(game.getAge(), is(1900));
         numberOfRounds(14);
-        assertEquals(1970, game.getAge());
+        assertThat(game.getAge(), is(1970));
         numberOfRounds(1);
-        assertEquals(1971, game.getAge());
+        assertThat(game.getAge(), is(1971));
         numberOfRounds(1);
-        assertEquals(1972, game.getAge());
+        assertThat(game.getAge(), is(1972));
     }
 
 
     @Test
     public void conqueringAllCitiesIsTheWinner() {
         game.moveUnit(new Position(4,3), new Position(4,2));
+        numberOfRounds(2);
         game.moveUnit(new Position(4,2), new Position(4,1));
         assertThat(game.getWinner(), is(Player.RED));
     }

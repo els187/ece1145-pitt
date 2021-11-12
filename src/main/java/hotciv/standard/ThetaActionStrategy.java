@@ -20,7 +20,7 @@ public class ThetaActionStrategy implements ActionStrategy {
             if (isCityAtPosition) {
                 boolean isOwnCity = game.getCityAt(pos).getOwner().equals(game.getPlayerInTurn());
                 if (!isOwnCity) {
-                    game.getCityAt(pos).setSize(-1);
+                    game.getCityAt(pos).incrementSize(-1);
                     if (game.getCityAt(pos).getSize() == 0) {
                         game.removeCity(pos);
                     }

@@ -16,7 +16,6 @@ public class TestThetaCiv {
     @Before
     public void setUp() {
         game = new GameImpl(new ThetaCivFactory());
-        game.createUnit(new Position(8, 8), new UnitImpl(GameConstants.UFO, Player.RED));
     }
 
     private void numberOfRounds(int rounds) {
@@ -28,30 +27,35 @@ public class TestThetaCiv {
 
     @Test
     public void canCreateUFO(){
+        game.createUnit(new Position(8, 8), new UnitImpl(GameConstants.UFO, Player.RED));
         assertThat(game.getUnitAt(new Position(8, 8)).getTypeString(), is(GameConstants.UFO));
     }
 
     @Test
     public void UFOShouldHaveAttackStrength1() {
+        game.createUnit(new Position(8, 8), new UnitImpl(GameConstants.UFO, Player.RED));
         assertThat(game.getUnitAt(new Position(8, 8)).getAttackingStrength(), is(1));
     }
 
     @Test
     public void UFOShouldHaveDefensiveStrength8() {
+        game.createUnit(new Position(8, 8), new UnitImpl(GameConstants.UFO, Player.RED));
         assertThat(game.getUnitAt(new Position(8, 8)).getDefensiveStrength(), is(8));
     }
 
     @Test
     public void UFOShouldHaveMoveCountOf2() {
+        game.createUnit(new Position(8, 8), new UnitImpl(GameConstants.UFO, Player.RED));
         assertThat(game.getUnitAt(new Position(8, 8)).getMoveCount(), is(2));
     }
 
     @Test
     public void shouldBeAbleToChangeProductionToUFO(){
+        game.getCityAt(new Position(1, 1)).setWorkforceFocus(GameConstants.productionFocus);
         game.changeProductionInCityAt(new Position(1, 1), GameConstants.UFO);
 
-        assertThat(game.getCityAt(new Position(1, 1)).getWorkforceFocus(), is(GameConstants.productionFocus));
-        assertThat(game.getCityAt(new Position(1, 1)).getProduction(), is(GameConstants.UFO));
+        assertThat(GameConstants.productionFocus, is(game.getCityAt(new Position(1, 1)).getWorkforceFocus()));
+        assertThat(GameConstants.UFO, is(game.getCityAt(new Position(1, 1)).getProduction()));
     }
 
     @Test
@@ -87,23 +91,36 @@ public class TestThetaCiv {
         assertThat(game.getCityAt(new Position(12,12)).getTreasury(), is(59));
         assertNull(game.getUnitAt(new Position(12,12)));
     }
+
     @Test
-    public void UFOCanFly2Distance(){
-        game.createUnit(new Position(10,10), new UnitImpl(GameConstants.UFO, Player.RED));
-        assertThat(game.getUnitAt(new Position(10,10)).getTypeString(), is(GameConstants.UFO));
-        game.moveUnit(new Position(10,10), new Position(10,11));
-        assertThat(game.getUnitAt(new Position(10,11)).getTypeString(), is(GameConstants.UFO));
-        assertTrue(game.moveUnit(new Position(10,11), new Position(11,12)));
+    public void UFOShouldBeAbleToMoveOverMountain() {
+        Position mountains = new Position(2, 2);
+        game.createUnit(new Position(3, 3), new UnitImpl(GameConstants.UFO, Player.RED));
+        game.moveUnit(new Position(3, 3), new Position(2,3));
+        game.moveUnit(new Position(2,3), mountains);
+        assertThat(game.getUnitAt(mountains).getTypeString(), is(GameConstants.UFO));
     }
+
     @Test
-    public void UFOCannotFlyDistanceOver2 (){
-        game.createUnit(new Position(10,10), new UnitImpl(GameConstants.UFO, Player.RED));
-        assertThat(game.getUnitAt(new Position(10,10)).getTypeString(), is(GameConstants.UFO));
-        game.moveUnit(new Position(10,10), new Position(10,11));
-        assertThat(game.getUnitAt(new Position(10,11)).getTypeString(), is(GameConstants.UFO));
-        game.moveUnit(new Position(10,11), new Position(11,12));
-        assertThat(game.getUnitAt(new Position(11,12)).getTypeString(), is(GameConstants.UFO));
-        assertThat(game.moveUnit(new Position(11,12), new Position(11,13)), is(false));
+    public void UFOShouldBeAbleToMoveOverOcean() {
+        Position ocean = new Position(1,0 );
+        game.createUnit(new Position(0, 0), new UnitImpl(GameConstants.UFO, Player.RED));
+        game.moveUnit(new Position(0, 0), ocean);
+        assertThat(game.getUnitAt(ocean).getTypeString(), is(GameConstants.UFO));
+        game.moveUnit(ocean,new Position(0, 0));
+        assertThat(game.getUnitAt(ocean), is(nullValue()));
+        assertThat(game.getUnitAt(new Position(0, 0)).getTypeString(), is(GameConstants.UFO));
+    }
+
+    @Test
+    public void UFOShouldBeAbleToMoveOverHills() {
+        Position hills = new Position(1,0 );
+        game.createUnit(new Position(0, 0), new UnitImpl(GameConstants.UFO, Player.RED));
+        game.moveUnit(new Position(0, 0), hills);
+        assertThat(game.getUnitAt(hills).getTypeString(), is(GameConstants.UFO));
+        game.moveUnit(hills,new Position(0, 0));
+        assertThat(game.getUnitAt(hills), is(nullValue()));
+        assertThat(game.getUnitAt(new Position(0, 0)).getTypeString(), is(GameConstants.UFO));
     }
 
     @Test
@@ -153,7 +170,6 @@ public class TestThetaCiv {
         game.createUnit(new Position(4, 2), new UnitImpl(GameConstants.UFO, Player.RED));
         game.moveUnit(new Position(4, 2), new Position(4, 1));
 
-        //UFO wins and removes unit
         assertThat(game.getUnitAt(new Position(4, 1)).getTypeString(), is(GameConstants.UFO));
         assertThat(game.getUnitAt(new Position(4, 2)), is(nullValue()));
     }
@@ -166,15 +182,18 @@ public class TestThetaCiv {
         assertThat(game.getUnitAt(new Position (12,12)).getOwner(), is(Player.RED));
         assertThat(game.getCityAt(new Position(12,12)).getSize(), is(1));
         game.getCityAt(new Position(12,12)).setSize(8);
+        assertThat(game.getCityAt(new Position(12,12)).getSize(), is(8));
         game.performUnitActionAt(new Position(12,12));
-        //Fails, returns what the size was set to
         assertThat(game.getCityAt(new Position(12,12)).getSize(), is(7));
+        game.performUnitActionAt(new Position(12,12));
+        assertThat(game.getCityAt(new Position(12,12)).getSize(), is(6));
+        game.performUnitActionAt(new Position(12,12));
+        assertThat(game.getCityAt(new Position(12,12)).getSize(), is(5)); //Returns whatever the size was set to
     }
 
     @Test
     public void cityPopulationShouldDecreaseWith1WhenActionPerformedByUFO() {
-        //increasing city population to 2
-        ((CityImpl) game.getCityAt(new Position(4, 1))).setSize(1);
+        game.getCityAt(new Position(4, 1)).setSize(2);
         assertThat(game.getCityAt(new Position(4, 1)).getSize(), is(2));
 
         game.createUnit(new Position(4, 2), new UnitImpl(GameConstants.UFO, Player.RED));
@@ -182,7 +201,6 @@ public class TestThetaCiv {
 
         game.performUnitActionAt(new Position(4, 1));
 
-        //Population decreases to 1
         assertThat(game.getCityAt(new Position(4, 1)).getSize(), is(1));
     }
 
@@ -225,32 +243,33 @@ public class TestThetaCiv {
     }
 
     @Test
-    public void UFOShouldBeAbleToMoveOverMountain() {
-        Position mountains = new Position(2, 2);
-        game.createUnit(new Position(3, 3), new UnitImpl(GameConstants.UFO, Player.RED));
-        game.moveUnit(new Position(3, 3), new Position(2,3));
-        game.moveUnit(new Position(2,3), mountains);
-        assertThat(game.getUnitAt(mountains).getTypeString(), is(GameConstants.UFO));
+    public void UFOCanFly2Distance(){
+        game.createUnit(new Position(10,10), new UnitImpl(GameConstants.UFO, Player.RED));
+        assertThat(game.getUnitAt(new Position(10,10)).getTypeString(), is(GameConstants.UFO));
+        game.moveUnit(new Position(10,10), new Position(10,11));
+        assertThat(game.getUnitAt(new Position(10,11)).getTypeString(), is(GameConstants.UFO));
+        assertTrue(game.moveUnit(new Position(10,11), new Position(11,12)));
     }
 
     @Test
-    public void UFOShouldBeAbleToMoveOverOcean() {
-        Position ocean = new Position(1,0 );
-        game.createUnit(new Position(0, 0), new UnitImpl(GameConstants.UFO, Player.RED));
-        game.moveUnit(new Position(0, 0), ocean);
-        assertThat(game.getUnitAt(ocean).getTypeString(), is(GameConstants.UFO));
-        game.moveUnit(ocean,new Position(0, 0));
-        assertThat(game.getUnitAt(ocean), is(nullValue()));
-        assertThat(game.getUnitAt(new Position(0, 0)).getTypeString(), is(GameConstants.UFO));
-    }
-
-    @Test
-    public void UFOShouldOnlyBeAbleToMove2TimesDuringTurn() {
+    public void UFOShouldHave0MovesLeftAfterMovingTwice() {
+        game.createUnit(new Position(8, 8), new UnitImpl(GameConstants.UFO, Player.RED));
         assertThat(game.getUnitAt(new Position(8, 8)).getMoveCount(), is(2));
         game.moveUnit(new Position(8, 8), new Position(8,9));
         assertThat(game.getUnitAt(new Position(8,9)).getMoveCount(), is(1));
         game.moveUnit(new Position(8,9),new Position(9,9));
         assertThat(game.getUnitAt(new Position(9,9)).getMoveCount(), is(0));
+    }
+
+    @Test
+    public void UFOShouldNotFlyDistanceOver2 (){
+        game.createUnit(new Position(10,10), new UnitImpl(GameConstants.UFO, Player.RED));
+        assertThat(game.getUnitAt(new Position(10,10)).getTypeString(), is(GameConstants.UFO));
+        game.moveUnit(new Position(10,10), new Position(10,11));
+        assertThat(game.getUnitAt(new Position(10,11)).getTypeString(), is(GameConstants.UFO));
+        game.moveUnit(new Position(10,11), new Position(11,12));
+        assertThat(game.getUnitAt(new Position(11,12)).getTypeString(), is(GameConstants.UFO));
+        assertThat(game.moveUnit(new Position(11,12), new Position(11,13)), is(false));
     }
 
     @Test
@@ -280,7 +299,7 @@ public class TestThetaCiv {
     }
 
     @Test
-    public void archerDefensiveStrengthIsDoubled () {
+    public void archerAt2_0defensiveStrengthIsDoubledIfUnitActionInitialized () {
         assertThat(game.getUnitAt(new Position(2,0)).getTypeString(), is(GameConstants.ARCHER));
         assertThat(game.getUnitAt(new Position(2,0 )).getDefensiveStrength(), is(3));
         game.performUnitActionAt(new Position(2,0 ));
@@ -288,7 +307,7 @@ public class TestThetaCiv {
     }
 
     @Test
-    public void settlerIsReplacedWithACity (){
+    public void settlerAt4_3IsReplacedWithACityAfterUnitAction (){
         assertThat(game.getUnitAt(new Position(4,3)), is (notNullValue()));
         game.performUnitActionAt(new Position(4,3));
         assertThat(game.getUnitAt(new Position(4,3)), is(nullValue()));
