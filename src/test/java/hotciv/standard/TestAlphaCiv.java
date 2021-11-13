@@ -43,19 +43,16 @@ public class TestAlphaCiv {
   @Test
   public void shouldBeBluesTurnAfterRed() {
     game.endOfTurn();
-    assertThat(game, is(notNullValue()));
     assertThat(game.getPlayerInTurn(), is(Player.BLUE));
   }
   @Test
   public void startsAtYear4000BC() {
-    assertThat(game, is(notNullValue()));
     assertThat(game.getAge(), is(-4000));
   }
 
   @Test
   public void ageIncreasesAfterEveryRound() {
     numberOfRounds(1);
-    assertThat(game, is(notNullValue()));
     assertThat(game.getAge(), is(-3900));
   }
 
@@ -65,13 +62,11 @@ public class TestAlphaCiv {
       game.endOfTurn();
       game.endOfTurn();
     }
-    assertThat(game, is(notNullValue()));
     assertThat(game.getWinner(), is(Player.RED));
   }
 
   @Test
   public void shouldHavePlainsEverywhereElse() {
-    assertThat(game, is(notNullValue()));
     assertThat(game.getTileAt(new Position(0, 0)).getTypeString(), is(GameConstants.PLAINS));
     assertThat(game.getTileAt(new Position(1, 1)).getTypeString(), is(GameConstants.PLAINS));
     assertThat(game.getTileAt(new Position(3, 3)).getTypeString(), is(GameConstants.PLAINS));
@@ -80,58 +75,49 @@ public class TestAlphaCiv {
 
   @Test
   public void shouldHaveOceanAt1_0() {
-    assertThat(game, is(notNullValue()));
     assertThat(game.getTileAt(new Position(1, 0)).getTypeString(), is(GameConstants.OCEANS));
   }
 
   @Test
   public void shouldHaveHillsAt0_1() {
-    assertThat(game, is(notNullValue()));
     assertThat(game.getTileAt(new Position(0, 1)).getTypeString(), is(GameConstants.HILLS));
   }
 
   @Test
   public void shouldHaveMountainsAt2_2() {
-    assertThat(game, is(notNullValue()));
     assertThat(game.getTileAt(new Position(2, 2)).getTypeString(), is(GameConstants.MOUNTAINS));
   }
 
   @Test
   public void shouldHaveRedArcherAt2_0(){
-    assertThat(game, is(notNullValue()));
     assertThat(game.getUnitAt(new Position(2,0)).getTypeString(), is(GameConstants.ARCHER));
     assertThat(game.getUnitAt(new Position(2, 0)).getOwner(), is(Player.RED));
   }
 
   @Test
   public void shouldHaveBlueLegionAt3_2(){
-    assertThat(game, is(notNullValue()));
     assertThat(game.getUnitAt(new Position(3,2)).getTypeString(), is(GameConstants.LEGION));
     assertThat(game.getUnitAt(new Position(3, 2)).getOwner(), is(Player.BLUE));
   }
 
   @Test
   public void shouldHaveRedSettlerAt4_3(){
-    assertThat(game, is(notNullValue()));
     assertThat(game.getUnitAt(new Position(4,3)).getTypeString(), is(GameConstants.SETTLER));
     assertThat(game.getUnitAt(new Position(4, 3)).getOwner(), is(Player.RED));
   }
 
   @Test
   public void shouldHaveRedCityAt1_1() {
-    assertThat(game, is(notNullValue()));
     assertThat(game.getCityAt(new Position(1, 1)).getOwner(), is(Player.RED));
   }
 
   @Test
   public void shouldHaveBlueCityAt4_1() {
-    assertThat(game, is(notNullValue()));
     assertThat(game.getCityAt(new Position(4, 1)).getOwner(), is(Player.BLUE));
   }
 
   @Test
   public void populationSizeShouldBe1() {
-    assertThat(game, is(notNullValue()));
     assertThat(game.getCityAt(new Position(1, 1)).getSize(), is(1));
     assertThat(game.getCityAt(new Position(4, 1)).getSize(), is(1));
   }
@@ -139,7 +125,7 @@ public class TestAlphaCiv {
 
   @Test
   public void citiesProduce6PerRound() {
-    assertThat(game.getCityAt(new Position(4, 1)), is(notNullValue())); // there is a city at 4,3
+    assertThat(game.getCityAt(new Position(4, 1)), is(notNullValue()));
     numberOfRounds(1);
     assertThat(game.getCityAt(new Position(4, 1)).getTreasury(), is(6));
   }
