@@ -6,9 +6,9 @@ import java.util.*;
 public class DeltaMapStrategy implements MapStrategy {
 
     // A simple implementation to draw the map of DeltaCiv
-    public HashMap<Position, TileImpl> tiles;
-    private HashMap<Position, UnitImpl> units;
-    private HashMap<Position, CityImpl> cities;
+    public HashMap<Position, Tile> tiles;
+    private HashMap<Position, Unit> units;
+    private HashMap<Position, City> cities;
     private String[] layout;
 
     /**
@@ -47,7 +47,7 @@ public class DeltaMapStrategy implements MapStrategy {
     }
     // Conversion...
     @Override
-    public HashMap<Position, TileImpl> defineTilesLayout () {
+    public HashMap<Position, Tile> defineTilesLayout () {
 
         String line;
         for (int r = 0; r < GameConstants.WORLDSIZE; r++) {
@@ -78,12 +78,12 @@ public class DeltaMapStrategy implements MapStrategy {
     }
 
     @Override
-    public HashMap<Position, UnitImpl> defineUnitsLayout () {
+    public HashMap<Position, Unit> defineUnitsLayout () {
         return units;
     }
 
     @Override
-    public HashMap<Position, CityImpl> defineCitiesLayout () {
+    public HashMap<Position, City> defineCitiesLayout () {
         return cities;
     }
 }

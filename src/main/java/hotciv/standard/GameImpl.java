@@ -43,9 +43,9 @@ public class GameImpl implements Game {
   private ActionStrategy actionStrategy;
   private BattleStrategy battleStrategy;
 
-  public HashMap<Position, CityImpl> cities;
-  public HashMap<Position, UnitImpl> units;
-  public HashMap<Position, TileImpl> tiles;
+  public HashMap<Position, City> cities;
+  public HashMap<Position, Unit> units;
+  public HashMap<Position, Tile> tiles;
 
   public GameImpl(GameFactory gameFactory) {
     this.agingStrategy = gameFactory.agingStrategy();
@@ -58,15 +58,15 @@ public class GameImpl implements Game {
     cities = gameFactory.mapStrategy().defineCitiesLayout();
   }
 
-  public TileImpl getTileAt(Position p) {
+  public Tile getTileAt(Position p) {
     return tiles.get(p);
   }
 
-  public UnitImpl getUnitAt(Position p) {
+  public Unit getUnitAt(Position p) {
     return units.get(p);
   }
 
-  public CityImpl getCityAt(Position p) {
+  public City getCityAt(Position p) {
     return cities.get(p);
   }
 
@@ -99,13 +99,13 @@ public class GameImpl implements Game {
       return false;
     }
 
-    //Place the unit at the destination and remove the unit from the source tile, decrement the move count
+    //Place the unit at the destination and remove the unit from the source tile
     replaceUnit(from, to);
 
-    //Set the unit move count
-    units.get(to).setUnitMoveCount();
+    //Decrement the unit move count
+    ((UnitImpl)units.get(to)).setUnitMoveCount();
 
-    //If city is not owned by anyone, set the owner
+    //Set the owner
     setOwner(to);
 
     return true;
@@ -134,7 +134,7 @@ public class GameImpl implements Game {
     Unit unitTo = units.get(to);
 
     if (getCityAt(to) != null && unitTo.getTypeString() != GameConstants.UFO) {
-      getCityAt(to).setOwner(getPlayerInTurn());
+      ((CityImpl)getCityAt(to)).setOwner(getPlayerInTurn());
     }
   }
 
@@ -202,9 +202,9 @@ public class GameImpl implements Game {
   }
 
   public void changeProductionInCityAt(Position p, String unitType) {
-    CityImpl c = cities.get(p);
+    City c = cities.get(p);
     if(getPlayerInTurn() == c.getOwner())
-      c.setProduction(unitType);
+      ((CityImpl) c).setProduction(unitType);
   }
 
   public void performUnitActionAt(Position p) {
@@ -213,20 +213,20 @@ public class GameImpl implements Game {
 
   public void setTreasuryAtEndOfRound(){
     for (Position p : cities.keySet()) {
-      CityImpl c = getCityAt(p);
-      c.setTreasury(6);
+      City c = getCityAt(p);
+      ((CityImpl) c).setTreasury(6);
     }
   }
 
   public void produceUnits() {
     for (Position pos : cities.keySet()) {
-      CityImpl c = getCityAt(pos);
+      City c = getCityAt(pos);
       boolean treasuryIsEnough = c.getTreasury() >= getUnitCost(c.getProduction());
       boolean unitIsPresent = units.containsKey(pos);
 
       //If treasury is enough then deduct treasury from the unit being produced
       if (treasuryIsEnough) {
-        c.setTreasury(-getUnitCost(c.getProduction()));
+        ((CityImpl)c).setTreasury(-getUnitCost(c.getProduction()));
         //If unit is not present, place it directly
         if (!unitIsPresent) {
           placeUnit(pos, c);
@@ -238,14 +238,14 @@ public class GameImpl implements Game {
     }
   }
 
-  public void placeUnit(Position pos, CityImpl c){
+  public void placeUnit(Position pos, City c){
     //If unit is not present, place it directly
     if(unitTypeIsValid(c)) {
       units.put(pos, new UnitImpl(c.getProduction(), c.getOwner()));
     }
   }
 
-  public void placeUnitClockwise(Position pos, CityImpl c){
+  public void placeUnitClockwise(Position pos, City c){
     //If unit is present, place it clockwise starting from North
     if(unitTypeIsValid(c)) {
       placeUnitsClockwise(pos, c);
@@ -315,12 +315,12 @@ public class GameImpl implements Game {
 
   public void resetMoveCount() {
     //Reset the move count
-    for (UnitImpl u : units.values()) {
+    for (Unit u : units.values()) {
       if (moveCountEqualsZero(u)){
         if(u.getTypeString().equals(GameConstants.UFO)){
-          u.setMoveCount(2);
+          ((UnitImpl) u).setMoveCount(2);
         } else {
-          u.setMoveCount(1);
+          ((UnitImpl) u).setMoveCount(1);
         }
       }
     }
@@ -339,7 +339,7 @@ public class GameImpl implements Game {
     }
   }
 
-  public void createCity(Position pos, CityImpl c) {
+  public void createCity(Position pos, City c) {
     cities.put(pos, c);
   }
 
@@ -347,7 +347,7 @@ public class GameImpl implements Game {
     cities.remove(pos);
   }
 
-  public void createUnit(Position pos, UnitImpl u) {
+  public void createUnit(Position pos, Unit u) {
     units.put(pos, u);
   }
 
@@ -355,7 +355,7 @@ public class GameImpl implements Game {
     units.remove(pos);
   }
 
-  public void createTile(Position pos, TileImpl t) {
+  public void createTile(Position pos, Tile t) {
     tiles.put(pos, t);
   }
 

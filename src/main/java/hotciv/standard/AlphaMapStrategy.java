@@ -5,9 +5,9 @@ import hotciv.framework.*;
 
 public class AlphaMapStrategy implements MapStrategy {
 
-    private HashMap<Position, TileImpl> tiles;
-    private HashMap<Position, UnitImpl> units;
-    private HashMap<Position, CityImpl> cities;
+    private HashMap<Position, Tile> tiles;
+    private HashMap<Position, Unit> units;
+    private HashMap<Position, City> cities;
 
     public AlphaMapStrategy() {
         tiles = new HashMap();
@@ -16,7 +16,7 @@ public class AlphaMapStrategy implements MapStrategy {
     }
 
     @Override
-    public HashMap<Position, TileImpl> defineTilesLayout() {
+    public HashMap<Position, Tile> defineTilesLayout() {
 
         for (int i = 0; i < GameConstants.WORLDSIZE; i++) {
             for (int j = 0; j < GameConstants.WORLDSIZE; j++) {
@@ -30,7 +30,7 @@ public class AlphaMapStrategy implements MapStrategy {
     }
 
     @Override
-    public HashMap<Position, UnitImpl> defineUnitsLayout() {
+    public HashMap<Position, Unit> defineUnitsLayout() {
         units.put(new Position(2, 0), new UnitImpl(GameConstants.ARCHER, Player.RED));
         units.put(new Position(3, 2), new UnitImpl(GameConstants.LEGION, Player.BLUE));
         units.put(new Position(4, 3), new UnitImpl(GameConstants.SETTLER, Player.RED));
@@ -38,7 +38,7 @@ public class AlphaMapStrategy implements MapStrategy {
     }
 
     @Override
-    public HashMap<Position, CityImpl> defineCitiesLayout() {
+    public HashMap<Position, City> defineCitiesLayout() {
         cities.put(new Position(1, 1), new CityImpl(Player.RED));
         cities.put(new Position(4, 1), new CityImpl(Player.BLUE));
         return cities;

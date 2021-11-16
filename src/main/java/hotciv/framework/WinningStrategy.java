@@ -4,5 +4,5 @@ import hotciv.standard.*;
 import java.util.Map;
 
 public interface WinningStrategy {
-    public Player getStrategicWinner(GameImpl game);
+    public Player getStrategicWinner(Game game);
 }

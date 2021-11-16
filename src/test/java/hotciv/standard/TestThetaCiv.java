@@ -51,7 +51,7 @@ public class TestThetaCiv {
 
     @Test
     public void shouldBeAbleToChangeProductionToUFO(){
-        game.getCityAt(new Position(1, 1)).setWorkforceFocus(GameConstants.productionFocus);
+        ((CityImpl)game.getCityAt(new Position(1, 1))).setWorkforceFocus(GameConstants.productionFocus);
         game.changeProductionInCityAt(new Position(1, 1), GameConstants.UFO);
 
         assertThat(GameConstants.productionFocus, is(game.getCityAt(new Position(1, 1)).getWorkforceFocus()));
@@ -70,9 +70,9 @@ public class TestThetaCiv {
     @Test
     public void cannotProduceUFOWhenTreasuryIsNotEnough (){
         game.createCity(new Position(12,12), new CityImpl(Player.RED));
-        game.getCityAt(new Position(12,12)).setProduction(GameConstants.UFO);
+        ((CityImpl)game.getCityAt(new Position(12,12))).setProduction(GameConstants.UFO);
         assertThat(game.getCityAt(new Position(12,12)).getProduction(), is(GameConstants.UFO));
-        game.getCityAt(new Position(12,12)).setTreasury(53);
+        ((CityImpl)game.getCityAt(new Position(12,12))).setTreasury(53);
         assertThat(game.getCityAt(new Position(12,12)).getTreasury(), is(53));
         game.endOfTurn();
         game.endOfTurn();
@@ -186,7 +186,7 @@ public class TestThetaCiv {
         game.createUnit(new Position(12,12), new UnitImpl(GameConstants.UFO, Player.RED));
         assertThat(game.getUnitAt(new Position (12,12)).getOwner(), is(Player.RED));
         assertThat(game.getCityAt(new Position(12,12)).getSize(), is(1));
-        game.getCityAt(new Position(12,12)).setSize(8);
+        ((CityImpl)game.getCityAt(new Position(12,12))).setSize(8);
         assertThat(game.getCityAt(new Position(12,12)).getSize(), is(8));
         game.performUnitActionAt(new Position(12,12));
         assertThat(game.getCityAt(new Position(12,12)).getSize(), is(7));

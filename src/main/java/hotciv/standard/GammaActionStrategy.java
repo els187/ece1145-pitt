@@ -3,20 +3,20 @@ import hotciv.framework.*;
 
 public class GammaActionStrategy implements ActionStrategy {
     @Override
-    public void unitAction(Position pos, GameImpl game){
+    public void unitAction(Position pos, Game game){
         if (game.getUnitAt(pos) != null) {
             String unit = game.getUnitAt(pos).getTypeString();
             if (unit.equals(GameConstants.ARCHER)) {
-                UnitImpl archer = game.getUnitAt(pos);
-                if (archer.isFortified()) {
-                    archer.deFortify();
+                Unit archer = game.getUnitAt(pos);
+                if (((UnitImpl) game.getUnitAt(pos)).isFortified()) {
+                    ((UnitImpl)archer).deFortify();
                 } else {
-                    archer.fortify();
+                    ((UnitImpl)archer).fortify();
                 }
             }
             else if (unit.equals(GameConstants.SETTLER)) {
-                game.createCity(pos, new CityImpl(game.getUnitAt(pos).getOwner()));
-                game.removeUnit(pos);
+                ((GameImpl)game).createCity(pos, new CityImpl(game.getUnitAt(pos).getOwner()));
+                ((GameImpl)game).removeUnit(pos);
             }
         }
     }

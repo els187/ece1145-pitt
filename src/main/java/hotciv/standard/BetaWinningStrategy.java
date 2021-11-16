@@ -5,8 +5,8 @@ import hotciv.framework.Player;
 
 public class BetaWinningStrategy implements WinningStrategy {
     @Override
-    public Player getStrategicWinner(GameImpl game) {
-        for (Position p : game.cities.keySet()) {
+    public Player getStrategicWinner(Game game) {
+        for (Position p : ((GameImpl)game).cities.keySet()) {
             if(game.getCityAt(p).getOwner() != game.getPlayerInTurn()){
                 return null;
             }
