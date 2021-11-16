@@ -14,9 +14,9 @@ public class ZetaWinningStrategy implements WinningStrategy{
 
     @Override
     public Player getStrategicWinner(Game game) {
-        if (game.getNumRounds() >= 20 ) {
+        if (((GameImpl)game).getNumRounds() >= 20 ) {
             return epsilonWinner.getStrategicWinner(game);
-        } else if(game.getNumRounds() < 20){
+        } else if(((GameImpl)game).getNumRounds() < 20){
             return betaWinner.getStrategicWinner(game);
         }
         return null;
