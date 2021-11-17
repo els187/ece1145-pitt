@@ -70,7 +70,7 @@ public class TranscriptDecorator implements Game {
     @Override
     public boolean moveUnit(Position from, Position to) {
         if(game.moveUnit(from, to) == true){
-            System.out.println(game.getPlayerInTurn() + " moves from " + from + " to " +  to);
+            System.out.println(game.getPlayerInTurn() + " moves from " + from + " to " +  to + ".");
             return true;
         } else {
             return false;
@@ -87,18 +87,18 @@ public class TranscriptDecorator implements Game {
     public void changeWorkForceFocusInCityAt(Position p, String balance) {
         City city = game.getCityAt(p);
         game.changeWorkForceFocusInCityAt(p, balance);
-        System.out.println(city.getOwner() + " changes work force focus in city at (" + p.getRow() + "," + p.getColumn() + ") to " + balance);
+        System.out.println(city.getOwner() + " changes work force focus in city at (" + p.getRow() + "," + p.getColumn() + ") to " + balance + ".");
     }
 
     @Override
     public void changeProductionInCityAt(Position p, String unitType) {
         game.changeProductionInCityAt(p, unitType);
-        System.out.println(game.getPlayerInTurn() + " changes production in city at " + p + " to " + unitType + ".");
+        System.out.println(game.getPlayerInTurn() + " changes production in city at (" + p.getRow() + "," + p.getColumn() + ") to " + unitType + ".");
     }
 
     @Override
     public void performUnitActionAt(Position p) {
         game.performUnitActionAt(p);
-        System.out.println(game.getPlayerInTurn() + " perform unit action on " + game.getUnitAt(p).getTypeString() + " at position " + p + ".");
+        System.out.println(game.getPlayerInTurn() + " performs unit action on " + game.getUnitAt(p).getTypeString() + " at position (" + p.getRow() + "," + p.getColumn() + ").");
     }
 }
