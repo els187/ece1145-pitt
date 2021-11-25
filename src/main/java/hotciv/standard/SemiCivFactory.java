@@ -1,7 +1,7 @@
 package hotciv.standard;
 import hotciv.framework.*;
 
-public class SemiCivFactory implements GameFactory {
+public class SemiCivFactory implements GameFactory{
     private DieRollStrategy dieRollStrategy;
 
     SemiCivFactory(DieRollStrategy rollStrategy) {
@@ -31,5 +31,15 @@ public class SemiCivFactory implements GameFactory {
     @Override
     public BattleStrategy battleStrategy() {
         return new EpsilonBattleStrategy(dieRollStrategy);
+    }
+
+    @Override
+    public PopulationStrategy populationStrategy() {
+        return new AlphaPopulationStrategy();
+    }
+
+    @Override
+    public WorkForceFocusStrategy workForceFocusStrategy() {
+        return new AlphaWorkForceFocusStrategy();
     }
 }

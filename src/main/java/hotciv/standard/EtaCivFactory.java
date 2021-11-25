@@ -1,7 +1,7 @@
 package hotciv.standard;
 import hotciv.framework.*;
 
-public class DeltaCivFactory implements GameFactory{
+public class EtaCivFactory implements GameFactory{
 
     @Override
     public AgingStrategy agingStrategy() {
@@ -15,7 +15,7 @@ public class DeltaCivFactory implements GameFactory{
 
     @Override
     public MapStrategy mapStrategy() {
-        return new DeltaMapStrategy();
+        return new AlphaMapStrategy();
     }
 
     @Override
@@ -24,18 +24,17 @@ public class DeltaCivFactory implements GameFactory{
     }
 
     @Override
+    public PopulationStrategy populationStrategy() {
+        return new EtaPopulationStrategy();
+    }
+
+    @Override
     public BattleStrategy battleStrategy() {
         return new AlphaBattleStrategy();
     }
 
     @Override
-    public PopulationStrategy populationStrategy() {
-        return new AlphaPopulationStrategy();
-    }
-
-    @Override
     public WorkForceFocusStrategy workForceFocusStrategy() {
-        return new AlphaWorkForceFocusStrategy();
+        return new EtaWorkForceFocusStrategy();
     }
 }
-

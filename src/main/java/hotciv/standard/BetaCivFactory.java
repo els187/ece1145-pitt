@@ -27,4 +27,14 @@ public class BetaCivFactory implements GameFactory{
     public BattleStrategy battleStrategy() {
         return new AlphaBattleStrategy();
     }
+
+    @Override
+    public PopulationStrategy populationStrategy() {
+        return new AlphaPopulationStrategy();
+    }
+
+    @Override
+    public WorkForceFocusStrategy workForceFocusStrategy() {
+        return new AlphaWorkForceFocusStrategy();
+    }
 }

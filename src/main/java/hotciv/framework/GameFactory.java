@@ -6,4 +6,6 @@ public interface GameFactory {
     MapStrategy mapStrategy();
     ActionStrategy actionStrategy();
     BattleStrategy battleStrategy();
+    PopulationStrategy populationStrategy();
+    WorkForceFocusStrategy workForceFocusStrategy();
 }

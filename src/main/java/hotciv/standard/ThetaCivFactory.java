@@ -27,5 +27,15 @@ public class ThetaCivFactory implements GameFactory{
     public BattleStrategy battleStrategy() {
         return new AlphaBattleStrategy();
     }
+
+    @Override
+    public PopulationStrategy populationStrategy() {
+        return new AlphaPopulationStrategy();
+    }
+
+    @Override
+    public WorkForceFocusStrategy workForceFocusStrategy() {
+        return new AlphaWorkForceFocusStrategy();
+    }
 }
 

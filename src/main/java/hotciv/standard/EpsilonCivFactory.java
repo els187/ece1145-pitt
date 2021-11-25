@@ -32,4 +32,14 @@ public class EpsilonCivFactory implements GameFactory{
     public BattleStrategy battleStrategy() {
         return new EpsilonBattleStrategy(dieRollStrategy);
     }
+
+    @Override
+    public PopulationStrategy populationStrategy() {
+        return new AlphaPopulationStrategy();
+    }
+
+    @Override
+    public WorkForceFocusStrategy workForceFocusStrategy() {
+        return new AlphaWorkForceFocusStrategy();
+    }
 }

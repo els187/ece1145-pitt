@@ -42,6 +42,8 @@ public class GameImpl implements Game {
   private WinningStrategy winningStrategy;
   private ActionStrategy actionStrategy;
   private BattleStrategy battleStrategy;
+  private WorkForceFocusStrategy workForceFocusStrategy;
+  private PopulationStrategy populationStrategy;
 
   public HashMap<Position, City> cities;
   public HashMap<Position, Unit> units;
@@ -52,6 +54,8 @@ public class GameImpl implements Game {
     this.winningStrategy = gameFactory.winningStrategy();
     this.actionStrategy = gameFactory.actionStrategy();
     this.battleStrategy = gameFactory.battleStrategy();
+    this.workForceFocusStrategy = gameFactory.workForceFocusStrategy();
+    this.populationStrategy = gameFactory.populationStrategy();
 
     tiles = gameFactory.mapStrategy().defineTilesLayout();
     units = gameFactory.mapStrategy().defineUnitsLayout();
@@ -199,6 +203,7 @@ public class GameImpl implements Game {
   }
 
   public void changeWorkForceFocusInCityAt(Position p, String balance) {
+    workForceFocusStrategy.produceInCity(this, p);
   }
 
   public void changeProductionInCityAt(Position p, String unitType) {
@@ -214,7 +219,8 @@ public class GameImpl implements Game {
   public void setTreasuryAtEndOfRound(){
     for (Position p : cities.keySet()) {
       City c = getCityAt(p);
-      ((CityImpl) c).setTreasury(6);
+      changeWorkForceFocusInCityAt(p, c.getWorkforceFocus());
+      populationStrategy.increaseCitySize(c);
     }
   }
 
@@ -258,8 +264,8 @@ public class GameImpl implements Game {
     boolean isUfo = units.get(from).getTypeString().equals(GameConstants.UFO);
 
     //Check if it is trying to move to mountains or oceans
-    if ((tileTo.getTypeString() == GameConstants.MOUNTAINS && !isUfo) ||
-            (tileTo.getTypeString() == GameConstants.OCEANS && !isUfo)) {
+    if ((tileTo.getTypeString().equals(GameConstants.MOUNTAINS) && !isUfo) ||
+            (tileTo.getTypeString().equals(GameConstants.OCEANS) && !isUfo)) {
       return false;
     }
     return true;
