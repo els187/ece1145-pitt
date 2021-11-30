@@ -137,6 +137,30 @@ public class GameImpl implements Game {
     notifyTurnEnds(playerInTurn, age);
   }
 
+  public void changeWorkForceFocusInCityAt(Position p, String balance) {
+    workForceFocusStrategy.produceInCity(this, p);
+  }
+
+  public void changeProductionInCityAt(Position p, String unitType) {
+    City c = cities.get(p);
+    if(getPlayerInTurn() == c.getOwner())
+      ((CityImpl) c).setProduction(unitType);
+  }
+
+  public void performUnitActionAt(Position p) {
+    actionStrategy.unitAction(p, this);
+    notifyWorldChangedAt(p);
+  }
+
+  public void addObserver(GameObserver observer) {
+    gameObserver.add(observer);
+  }
+
+  public void setTileFocus(Position position) {
+    notifyTileFocusChangedAt(position);
+  }
+
+
   public void calculateAge(){
     age = agingStrategy.getStrategicAging(age);
   }
@@ -150,10 +174,7 @@ public class GameImpl implements Game {
   }
 
   public void replaceUnit(Position from, Position to){
-    Unit unitFrom = units.get(from);
-
-    units.put(to, new UnitImpl(unitFrom.getTypeString(), unitFrom.getOwner()));
-    createUnit(to, getUnitAt(from));
+    units.put(to, getUnitAt(from));
     units.remove(from);
   }
 
@@ -207,29 +228,6 @@ public class GameImpl implements Game {
       return false;
     }
     return true;
-  }
-
-  public void changeWorkForceFocusInCityAt(Position p, String balance) {
-    workForceFocusStrategy.produceInCity(this, p);
-  }
-
-  public void changeProductionInCityAt(Position p, String unitType) {
-    City c = cities.get(p);
-    if(getPlayerInTurn() == c.getOwner())
-      ((CityImpl) c).setProduction(unitType);
-  }
-
-  public void performUnitActionAt(Position p) {
-    actionStrategy.unitAction(p, this);
-    notifyWorldChangedAt(p);
-  }
-
-  public void addObserver(GameObserver observer) {
-    gameObserver.add(observer);
-  }
-
-  public void setTileFocus(Position position) {
-    notifyTileFocusChangedAt(position);
   }
 
   public void setTreasuryAtEndOfRound(){
