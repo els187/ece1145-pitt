@@ -48,6 +48,7 @@ public class GameImpl implements Game {
   public HashMap<Position, City> cities;
   public HashMap<Position, Unit> units;
   public HashMap<Position, Tile> tiles;
+  private ArrayList<GameObserver> gameObserver;
 
   public GameImpl(GameFactory gameFactory) {
     this.agingStrategy = gameFactory.agingStrategy();
@@ -60,6 +61,8 @@ public class GameImpl implements Game {
     tiles = gameFactory.mapStrategy().defineTilesLayout();
     units = gameFactory.mapStrategy().defineUnitsLayout();
     cities = gameFactory.mapStrategy().defineCitiesLayout();
+
+    gameObserver = new ArrayList();
   }
 
   public Tile getTileAt(Position p) {
@@ -112,6 +115,9 @@ public class GameImpl implements Game {
     //Set the owner
     setOwner(to);
 
+    notifyWorldChangedAt(from);
+    notifyWorldChangedAt(to);
+
     return true;
   }
 
@@ -128,6 +134,7 @@ public class GameImpl implements Game {
       winner = getWinner();
       numRounds++;
     }
+    notifyTurnEnds(playerInTurn, age);
   }
 
   public void calculateAge(){
@@ -214,14 +221,15 @@ public class GameImpl implements Game {
 
   public void performUnitActionAt(Position p) {
     actionStrategy.unitAction(p, this);
+    notifyWorldChangedAt(p);
   }
 
   public void addObserver(GameObserver observer) {
-
+    gameObserver.add(observer);
   }
 
   public void setTileFocus(Position position) {
-
+    notifyTileFocusChangedAt(position);
   }
 
   public void setTreasuryAtEndOfRound(){
@@ -355,22 +363,27 @@ public class GameImpl implements Game {
 
   public void createCity(Position pos, City c) {
     cities.put(pos, c);
+    notifyWorldChangedAt(pos);
   }
 
   public void removeCity(Position pos) {
     cities.remove(pos);
+    notifyWorldChangedAt(pos);
   }
 
   public void createUnit(Position pos, Unit u) {
     units.put(pos, u);
+    notifyWorldChangedAt(pos);
   }
 
   public void removeUnit(Position pos) {
     units.remove(pos);
+    notifyWorldChangedAt(pos);
   }
 
   public void createTile(Position pos, Tile t) {
     tiles.put(pos, t);
+    notifyWorldChangedAt(pos);
   }
 
   public int getBluePlayerWins(){
@@ -383,5 +396,27 @@ public class GameImpl implements Game {
 
   public int getNumRounds() {
     return numRounds;
+  }
+
+  public void notifyWorldChangedAt(Position pos){
+    for(GameObserver obs: gameObserver)
+    {
+      obs.worldChangedAt(pos);
+    }
+  }
+
+  public void notifyTurnEnds(Player nextPlayer, int age){
+    for(GameObserver obs: gameObserver)
+    {
+      obs.turnEnds(nextPlayer, age);
+    }
+  }
+
+  public void notifyTileFocusChangedAt(Position position)
+  {
+    for(GameObserver obs: gameObserver)
+    {
+      obs.tileFocusChangedAt(position);
+    }
   }
 }
