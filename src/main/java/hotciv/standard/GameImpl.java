@@ -216,6 +216,14 @@ public class GameImpl implements Game {
     actionStrategy.unitAction(p, this);
   }
 
+  public void addObserver(GameObserver observer) {
+
+  }
+
+  public void setTileFocus(Position position) {
+
+  }
+
   public void setTreasuryAtEndOfRound(){
     for (Position p : cities.keySet()) {
       City c = getCityAt(p);

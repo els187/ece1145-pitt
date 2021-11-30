@@ -101,4 +101,14 @@ public class TranscriptDecorator implements Game {
         game.performUnitActionAt(p);
         System.out.println(game.getPlayerInTurn() + " performs unit action on " + game.getUnitAt(p).getTypeString() + " at position (" + p.getRow() + "," + p.getColumn() + ").");
     }
+
+    @Override
+    public void addObserver(GameObserver observer) {
+
+    }
+
+    @Override
+    public void setTileFocus(Position position) {
+
+    }
 }
