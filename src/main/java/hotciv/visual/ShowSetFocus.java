@@ -55,7 +55,7 @@ class SetFocusTool extends NullTool {
   @Override
   public void mouseDown(MouseEvent e, int x, int y) {
     Position position = GfxConstants.getPositionFromXY(x, y);
-    if(game.getUnitAt(position) != null || game.getCityAt(position) != null) {
+    if (game.getUnitAt(position) != null || game.getCityAt(position) != null) {
       if (position.getRow() < GameConstants.WORLDSIZE && position.getColumn() < GameConstants.WORLDSIZE) {
         game.setTileFocus(GfxConstants.getPositionFromXY(x, y));
         drawingEditor.showStatus("Set Tile Focus at " + position);

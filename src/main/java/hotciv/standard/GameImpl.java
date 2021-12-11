@@ -160,7 +160,6 @@ public class GameImpl implements Game {
     notifyTileFocusChangedAt(position);
   }
 
-
   public void calculateAge(){
     age = agingStrategy.getStrategicAging(age);
   }
@@ -196,6 +195,7 @@ public class GameImpl implements Game {
 
   public boolean checkValidMove(Position from, Position to){
     boolean tileIsWithinWorld = tiles.containsKey(to);
+    boolean isUfo = units.get(from).getTypeString().equals(GameConstants.UFO);
     //Check if destination tile is within the 16*16 limit
     if(!tileIsWithinWorld){
       return false;
@@ -207,9 +207,14 @@ public class GameImpl implements Game {
     }
 
     //Check if destination tile contains mountains or oceans and unit is not UFO
-    if(!tileTypeIsValid(to, from)){
+    if(!tileTypeIsValid(to) && !isUfo){
       return false;
     }
+
+//    //Check if destination tile contains mountains or oceans and unit is not UFO
+//    if(!tileTypeIsValid(from, to)){
+//      return false;
+//    }
 
     Unit unitFrom = units.get(from);
     Unit unitTo = units.get(to);
@@ -262,6 +267,7 @@ public class GameImpl implements Game {
     //If unit is not present, place it directly
     if(unitTypeIsValid(c)) {
       units.put(pos, new UnitImpl(c.getProduction(), c.getOwner()));
+      notifyWorldChangedAt(pos);
     }
   }
 
@@ -269,17 +275,18 @@ public class GameImpl implements Game {
     //If unit is present, place it clockwise starting from North
     if(unitTypeIsValid(c)) {
       placeUnitsClockwise(pos, c);
+      notifyWorldChangedAt(pos);
     }
   }
 
-  public boolean tileTypeIsValid(Position to, Position from) {
+  public boolean tileTypeIsValid(Position to) {
     Tile tileTo = getTileAt(to);
 
-    boolean isUfo = units.get(from).getTypeString().equals(GameConstants.UFO);
+    //boolean isUfo = units.get(from).getTypeString().equals(GameConstants.UFO);
 
     //Check if it is trying to move to mountains or oceans
-    if ((tileTo.getTypeString().equals(GameConstants.MOUNTAINS) && !isUfo) ||
-            (tileTo.getTypeString().equals(GameConstants.OCEANS) && !isUfo)) {
+    if ((tileTo.getTypeString().equals(GameConstants.MOUNTAINS)) ||
+            (tileTo.getTypeString().equals(GameConstants.OCEANS))) {
       return false;
     }
     return true;
@@ -326,7 +333,7 @@ public class GameImpl implements Game {
     boolean unitPlacementIsSuccessful = false;
     //Iterating through all possible adjacent coordinates of the tiles and placing it into the first empty space
     for (Position n : Utility.get8neighborhoodOf(pos)) {
-      if (!units.containsKey(n) && !unitPlacementIsSuccessful) {
+      if (!units.containsKey(n) && !unitPlacementIsSuccessful && tileTypeIsValid(n)) {
         units.put(n, new UnitImpl(c.getProduction(), c.getOwner()));
         unitPlacementIsSuccessful = true;
       }

@@ -47,7 +47,6 @@ class CompositionTool extends NullTool {
   DrawingEditor drawingEditor;
   Game game;
   private Tool toolState;
-  Position unitFrom;
 
   public CompositionTool(DrawingEditor drawingEditor, Game game) {
     this.drawingEditor = drawingEditor;
@@ -57,14 +56,24 @@ class CompositionTool extends NullTool {
 
   @Override
   public void mouseDown(MouseEvent e, int x, int y) {
-    unitFrom = GfxConstants.getPositionFromXY(x, y);
-    if(game.getUnitAt(unitFrom) != null){
-      toolState = new SetFocusTool(drawingEditor, game);
-      if(e.isShiftDown() && game.getUnitAt(unitFrom).getOwner().equals(game.getPlayerInTurn())) {
-        toolState = new ActionTool(drawingEditor, game);
+    if (drawingEditor.drawing().findFigure(x, y) != null) {
+      if (drawingEditor.drawing().findFigure(x, y).displayBox().contains(GfxConstants.TURN_SHIELD_X, GfxConstants.TURN_SHIELD_Y)) {
+        toolState = new EndOfTurnTool(drawingEditor, game);
       }
+
+      if (game.getCityAt(GfxConstants.getPositionFromXY(x, y)) != null) {
+        toolState = new SetFocusTool(drawingEditor, game);
+      }
+
+      Position unitFrom = GfxConstants.getPositionFromXY(x, y);
+      if (game.getUnitAt(unitFrom) != null) {
+        toolState = new SetFocusTool(drawingEditor, game);
+        if (e.isShiftDown() && game.getUnitAt(unitFrom).getOwner().equals(game.getPlayerInTurn())) {
+          toolState = new ActionTool(drawingEditor, game);
+        }
+      }
+      toolState.mouseDown(e, x, y);
     }
-    toolState.mouseDown(e, x, y);
   }
 
   @Override
@@ -78,13 +87,7 @@ class CompositionTool extends NullTool {
 
   @Override
   public void mouseMove(MouseEvent e, int x, int y) {
-    if(GfxConstants.getPositionFromXY(x,y).equals(GfxConstants.getPositionFromXY(GfxConstants.TURN_SHIELD_X, GfxConstants.TURN_SHIELD_Y))) {
-      toolState = new EndOfTurnTool(drawingEditor, game);
-    }
-
-    if(game.getCityAt(GfxConstants.getPositionFromXY(x,y)) != null){
-      toolState = new SetFocusTool(drawingEditor, game);
-    }
+    toolState.mouseMove(e, x, y);
   }
 
   @Override
