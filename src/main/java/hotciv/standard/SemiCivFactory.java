@@ -4,7 +4,7 @@ import hotciv.framework.*;
 public class SemiCivFactory implements GameFactory{
     private DieRollStrategy dieRollStrategy;
 
-    SemiCivFactory(DieRollStrategy rollStrategy) {
+    public SemiCivFactory(DieRollStrategy rollStrategy) {
         this.dieRollStrategy = rollStrategy;
     }
 
