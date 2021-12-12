@@ -266,10 +266,12 @@ public class CivDrawing
             new Point( GfxConstants.TURN_SHIELD_X,
                     GfxConstants.TURN_SHIELD_Y ) );
     // TODO: Age output pending
-    if(age < 0) {
-      ageText.setText(Math.abs(age + 100) + " BC");
-    } else {
-      ageText.setText(Math.abs(age + 100) + " AD");
+    if(nextPlayer == Player.RED) {
+      if (age < 0) {
+        ageText.setText(Math.abs(age) + " BC");
+      } else {
+        ageText.setText(Math.abs(age) + " AD");
+      }
     }
   }
 
