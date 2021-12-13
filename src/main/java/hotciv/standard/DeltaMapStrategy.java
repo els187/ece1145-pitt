@@ -19,9 +19,6 @@ public class DeltaMapStrategy implements MapStrategy {
         units = new HashMap<>();
         cities = new HashMap<>();
 
-        cities.put(new Position(8,12), new CityImpl(Player.RED));
-        cities.put(new Position(4,5), new CityImpl(Player.BLUE));
-
         // Basically we use a 'data driven' approach - code the
         // layout in a simple semi-visual representation, and
         // convert it to the actual Game representation.
@@ -79,11 +76,17 @@ public class DeltaMapStrategy implements MapStrategy {
 
     @Override
     public HashMap<Position, Unit> defineUnitsLayout () {
+        units.put(new Position(2, 1), new UnitImpl(GameConstants.ARCHER, Player.RED));
+        units.put(new Position(3, 2), new UnitImpl(GameConstants.LEGION, Player.BLUE));
+        units.put(new Position(4, 3), new UnitImpl(GameConstants.SETTLER, Player.RED));
+        units.put(new Position(6,4), new UnitImpl(GameConstants.UFO, Player.BLUE));
         return units;
     }
 
     @Override
     public HashMap<Position, City> defineCitiesLayout () {
+        cities.put(new Position(8,12), new CityImpl(Player.RED));
+        cities.put(new Position(4,5), new CityImpl(Player.BLUE));
         return cities;
     }
 }

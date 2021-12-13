@@ -48,6 +48,7 @@ public class GameImpl implements Game {
   public HashMap<Position, City> cities;
   public HashMap<Position, Unit> units;
   public HashMap<Position, Tile> tiles;
+  private ArrayList<GameObserver> gameObserver;
 
   public GameImpl(GameFactory gameFactory) {
     this.agingStrategy = gameFactory.agingStrategy();
@@ -60,6 +61,8 @@ public class GameImpl implements Game {
     tiles = gameFactory.mapStrategy().defineTilesLayout();
     units = gameFactory.mapStrategy().defineUnitsLayout();
     cities = gameFactory.mapStrategy().defineCitiesLayout();
+
+    gameObserver = new ArrayList();
   }
 
   public Tile getTileAt(Position p) {
@@ -112,6 +115,9 @@ public class GameImpl implements Game {
     //Set the owner
     setOwner(to);
 
+    notifyWorldChangedAt(from);
+    notifyWorldChangedAt(to);
+
     return true;
   }
 
@@ -128,6 +134,30 @@ public class GameImpl implements Game {
       winner = getWinner();
       numRounds++;
     }
+    notifyTurnEnds(playerInTurn, age);
+  }
+
+  public void changeWorkForceFocusInCityAt(Position p, String balance) {
+    workForceFocusStrategy.produceInCity(this, p);
+  }
+
+  public void changeProductionInCityAt(Position p, String unitType) {
+    City c = cities.get(p);
+    if(getPlayerInTurn() == c.getOwner())
+      ((CityImpl) c).setProduction(unitType);
+  }
+
+  public void performUnitActionAt(Position p) {
+    actionStrategy.unitAction(p, this);
+    notifyWorldChangedAt(p);
+  }
+
+  public void addObserver(GameObserver observer) {
+    gameObserver.add(observer);
+  }
+
+  public void setTileFocus(Position position) {
+    notifyTileFocusChangedAt(position);
   }
 
   public void calculateAge(){
@@ -143,10 +173,7 @@ public class GameImpl implements Game {
   }
 
   public void replaceUnit(Position from, Position to){
-    Unit unitFrom = units.get(from);
-
-    units.put(to, new UnitImpl(unitFrom.getTypeString(), unitFrom.getOwner()));
-    createUnit(to, getUnitAt(from));
+    units.put(to, getUnitAt(from));
     units.remove(from);
   }
 
@@ -168,6 +195,7 @@ public class GameImpl implements Game {
 
   public boolean checkValidMove(Position from, Position to){
     boolean tileIsWithinWorld = tiles.containsKey(to);
+    boolean isUfo = units.get(from).getTypeString().equals(GameConstants.UFO);
     //Check if destination tile is within the 16*16 limit
     if(!tileIsWithinWorld){
       return false;
@@ -179,9 +207,14 @@ public class GameImpl implements Game {
     }
 
     //Check if destination tile contains mountains or oceans and unit is not UFO
-    if(!tileTypeIsValid(to, from)){
+    if(!tileTypeIsValid(to) && !isUfo){
       return false;
     }
+
+//    //Check if destination tile contains mountains or oceans and unit is not UFO
+//    if(!tileTypeIsValid(from, to)){
+//      return false;
+//    }
 
     Unit unitFrom = units.get(from);
     Unit unitTo = units.get(to);
@@ -200,28 +233,6 @@ public class GameImpl implements Game {
       return false;
     }
     return true;
-  }
-
-  public void changeWorkForceFocusInCityAt(Position p, String balance) {
-    workForceFocusStrategy.produceInCity(this, p);
-  }
-
-  public void changeProductionInCityAt(Position p, String unitType) {
-    City c = cities.get(p);
-    if(getPlayerInTurn() == c.getOwner())
-      ((CityImpl) c).setProduction(unitType);
-  }
-
-  public void performUnitActionAt(Position p) {
-    actionStrategy.unitAction(p, this);
-  }
-
-  public void addObserver(GameObserver observer) {
-
-  }
-
-  public void setTileFocus(Position position) {
-
   }
 
   public void setTreasuryAtEndOfRound(){
@@ -256,6 +267,7 @@ public class GameImpl implements Game {
     //If unit is not present, place it directly
     if(unitTypeIsValid(c)) {
       units.put(pos, new UnitImpl(c.getProduction(), c.getOwner()));
+      notifyWorldChangedAt(pos);
     }
   }
 
@@ -263,17 +275,18 @@ public class GameImpl implements Game {
     //If unit is present, place it clockwise starting from North
     if(unitTypeIsValid(c)) {
       placeUnitsClockwise(pos, c);
+      notifyWorldChangedAt(pos);
     }
   }
 
-  public boolean tileTypeIsValid(Position to, Position from) {
+  public boolean tileTypeIsValid(Position to) {
     Tile tileTo = getTileAt(to);
 
-    boolean isUfo = units.get(from).getTypeString().equals(GameConstants.UFO);
+    //boolean isUfo = units.get(from).getTypeString().equals(GameConstants.UFO);
 
     //Check if it is trying to move to mountains or oceans
-    if ((tileTo.getTypeString().equals(GameConstants.MOUNTAINS) && !isUfo) ||
-            (tileTo.getTypeString().equals(GameConstants.OCEANS) && !isUfo)) {
+    if ((tileTo.getTypeString().equals(GameConstants.MOUNTAINS)) ||
+            (tileTo.getTypeString().equals(GameConstants.OCEANS))) {
       return false;
     }
     return true;
@@ -320,7 +333,7 @@ public class GameImpl implements Game {
     boolean unitPlacementIsSuccessful = false;
     //Iterating through all possible adjacent coordinates of the tiles and placing it into the first empty space
     for (Position n : Utility.get8neighborhoodOf(pos)) {
-      if (!units.containsKey(n) && !unitPlacementIsSuccessful) {
+      if (!units.containsKey(n) && !unitPlacementIsSuccessful && tileTypeIsValid(n)) {
         units.put(n, new UnitImpl(c.getProduction(), c.getOwner()));
         unitPlacementIsSuccessful = true;
       }
@@ -355,22 +368,27 @@ public class GameImpl implements Game {
 
   public void createCity(Position pos, City c) {
     cities.put(pos, c);
+    notifyWorldChangedAt(pos);
   }
 
   public void removeCity(Position pos) {
     cities.remove(pos);
+    notifyWorldChangedAt(pos);
   }
 
   public void createUnit(Position pos, Unit u) {
     units.put(pos, u);
+    notifyWorldChangedAt(pos);
   }
 
   public void removeUnit(Position pos) {
     units.remove(pos);
+    notifyWorldChangedAt(pos);
   }
 
   public void createTile(Position pos, Tile t) {
     tiles.put(pos, t);
+    notifyWorldChangedAt(pos);
   }
 
   public int getBluePlayerWins(){
@@ -383,5 +401,27 @@ public class GameImpl implements Game {
 
   public int getNumRounds() {
     return numRounds;
+  }
+
+  public void notifyWorldChangedAt(Position pos){
+    for(GameObserver obs: gameObserver)
+    {
+      obs.worldChangedAt(pos);
+    }
+  }
+
+  public void notifyTurnEnds(Player nextPlayer, int age){
+    for(GameObserver obs: gameObserver)
+    {
+      obs.turnEnds(nextPlayer, age);
+    }
+  }
+
+  public void notifyTileFocusChangedAt(Position position)
+  {
+    for(GameObserver obs: gameObserver)
+    {
+      obs.tileFocusChangedAt(position);
+    }
   }
 }

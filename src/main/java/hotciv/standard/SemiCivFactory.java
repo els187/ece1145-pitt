@@ -4,7 +4,7 @@ import hotciv.framework.*;
 public class SemiCivFactory implements GameFactory{
     private DieRollStrategy dieRollStrategy;
 
-    SemiCivFactory(DieRollStrategy rollStrategy) {
+    public SemiCivFactory(DieRollStrategy rollStrategy) {
         this.dieRollStrategy = rollStrategy;
     }
 
@@ -35,11 +35,11 @@ public class SemiCivFactory implements GameFactory{
 
     @Override
     public PopulationStrategy populationStrategy() {
-        return new AlphaPopulationStrategy();
+        return new EtaPopulationStrategy();
     }
 
     @Override
     public WorkForceFocusStrategy workForceFocusStrategy() {
-        return new AlphaWorkForceFocusStrategy();
+        return new EtaWorkForceFocusStrategy();
     }
 }

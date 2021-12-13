@@ -41,10 +41,6 @@ public class CityImpl implements City{
         this.treasury += treasury;
     }
 
-    public void setProduction(int production){
-        this.treasury = production;
-    }
-
     public void setProduction(String productionType) {
         this.production = productionType;
     }
